@@ -65,7 +65,7 @@
   background: var(--text-primary);
   color: var(--bg-secondary);
   transition:
-    transform var(--dur-press, 160ms) var(--ease-out-strong, ease-out),
+    transform var(--dur-press) var(--ease-out-strong),
     background-color $transition-fast,
     border-color $transition-fast,
     opacity $transition-fast;
@@ -139,7 +139,7 @@
     .cm-lineNumbers .cm-gutterElement {
       padding: 0 8px 0 12px;
       min-width: 40px;
-      color: var(--text-muted);
+      color: var(--text-tertiary);
     }
 
     .cm-activeLine,

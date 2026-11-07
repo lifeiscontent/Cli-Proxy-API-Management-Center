@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/Button';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Input } from '@/components/ui/Input';
 import { Modal } from '@/components/ui/Modal';
+import { PageHeader } from '@/components/ui/PageHeader';
 import { ToggleSwitch } from '@/components/ui/ToggleSwitch';
 import { lockScroll, unlockScroll } from '@/components/ui/scrollLock';
 import {
@@ -29,6 +30,11 @@ import { useAuthStore, useConfigStore, useNotificationStore } from '@/stores';
 import { logsApi, responseDataToText, type ErrorLogFile } from '@/services/api/logs';
 import { INITIAL_VISIBLE_LINES } from './model/logBuffer';
 import { useLogStream } from './hooks/useLogStream';
+import {
+  ErrorLogContentSkeleton,
+  ErrorLogListSkeleton,
+  LogPanelSkeleton,
+} from './components/LogsSkeletons';
 import { copyToClipboard } from '@/utils/clipboard';
 import { getErrorMessage } from '@/utils/helpers';
 import { downloadBlob } from '@/utils/download';
@@ -52,6 +58,10 @@ const INITIAL_DISPLAY_LINES = INITIAL_VISIBLE_LINES;
 
 type TabType = 'logs' | 'errors';
 
+// An unwrapped request row is about 940px wide. Below 1280px the log panel is
+// narrower, so the row end (often the request path) is clipped. Wrap by default there.
+const WRAP_BY_DEFAULT_QUERY = '(max-width: 1279px)';
+
 export function LogsPage() {
   const { t } = useTranslation();
   const { showNotification } = useNotificationStore();
@@ -69,7 +79,11 @@ export function LogsPage() {
     true
   );
   const [showRawLogs, setShowRawLogs] = useLocalStorage('logsPage.showRawLogs', false);
-  const [wrapLogs, setWrapLogs] = useLocalStorage('logsPage.wrapLogs', false);
+  const [wrapLogs, setWrapLogs] = useLocalStorage(
+    'logsPage.wrapLogs',
+    () =>
+      typeof window.matchMedia === 'function' && window.matchMedia(WRAP_BY_DEFAULT_QUERY).matches
+  );
   const [structuredFiltersExpanded, setStructuredFiltersExpanded] = useState(false);
   const [errorLogs, setErrorLogs] = useState<ErrorLogFile[]>([]);
   const [loadingErrors, setLoadingErrors] = useState(false);
@@ -399,8 +413,7 @@ export function LogsPage() {
 
   return (
     <div className={styles.container}>
-      <header className={styles.pageHeader}>
-        <h1 className={styles.pageTitle}>{t('logs.title')}</h1>
+      <PageHeader title={t('logs.title')}>
         <div className={styles.tabBar} role="group" aria-label={t('logs.title')}>
           <button
             type="button"
@@ -422,7 +435,7 @@ export function LogsPage() {
             {t('logs.error_logs_modal_title')}
           </button>
         </div>
-      </header>
+      </PageHeader>
 
       <div className={styles.content}>
         {activeTab === 'logs' && (
@@ -753,7 +766,7 @@ export function LogsPage() {
 
             <div className={styles.viewerArea}>
               {loading && logBuffer.buffer.length === 0 ? (
-                <div className="hint">{t('logs.loading')}</div>
+                <LogPanelSkeleton wrapped={wrapLogs} />
               ) : logBuffer.buffer.length > 0 && filteredLines.length > 0 ? (
                 <div
                   ref={logViewerRef}
@@ -973,8 +986,8 @@ export function LogsPage() {
               {errorLogsError && <div className="error-box">{errorLogsError}</div>}
 
               <div className={styles.errorPanel}>
-                {loadingErrors ? (
-                  <div className="hint">{t('common.loading')}</div>
+                {loadingErrors && errorLogs.length === 0 ? (
+                  <ErrorLogListSkeleton />
                 ) : errorLogs.length === 0 ? (
                   <div className="hint">{t('logs.error_logs_empty')}</div>
                 ) : (
@@ -1069,7 +1082,7 @@ export function LogsPage() {
           {errorLogViewer.status === 'error' && (
             <div className="error-box">{errorLogViewer.message}</div>
           )}
-          {errorLogViewer.status === 'loading' && <div className="hint">{t('common.loading')}</div>}
+          {errorLogViewer.status === 'loading' && <ErrorLogContentSkeleton />}
           {errorLogViewer.status === 'ready' &&
             (errorLogViewer.text ? (
               <pre className={styles.errorLogContent} spellCheck={false}>

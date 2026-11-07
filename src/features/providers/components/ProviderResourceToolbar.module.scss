@@ -1,5 +1,4 @@
 @use '../../../styles/mixins' as *;
-@use '../../../styles/variables' as *;
 
 .root {
   display: flex;
@@ -16,17 +15,20 @@
 
 .label {
   font-size: 12px;
-  color: var(--muted-foreground);
+  color: var(--text-secondary);
   white-space: nowrap;
 }
 
+// The touch area grows only into the 6px gap beside the sort select.
 .dirBtn {
+  @include touch-target(42px);
   display: inline-flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  width: 30px;
-  height: 30px;
-  border-radius: var(--radius-md);
+  width: var(--control-height);
+  height: var(--control-height);
+  border-radius: $radius-md;
   border: 1px solid var(--border-color);
   background: var(--bg-primary);
   color: var(--text-secondary);
@@ -49,9 +51,9 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  height: 30px;
+  height: var(--control-height);
   padding: 0 11px;
-  border-radius: var(--radius-md);
+  border-radius: $radius-md;
   border: 1px solid var(--border-color);
   background: var(--bg-primary);
   color: var(--text-primary);
@@ -81,7 +83,7 @@
   z-index: $z-dropdown;
   background: var(--bg-primary);
   border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
+  border-radius: $radius-md;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
   padding: 8px;
   display: flex;
@@ -98,7 +100,7 @@
 
 .filterToolbarBtn {
   padding: 3px 9px;
-  border-radius: var(--radius-md);
+  border-radius: $radius-md;
   border: 1px solid var(--border-color);
   background: var(--bg-primary);
   color: var(--text-secondary);
@@ -120,7 +122,7 @@
   padding: 12px;
   text-align: center;
   font-size: 13px;
-  color: var(--muted-foreground);
+  color: var(--text-secondary);
 }
 
 .filterList {
@@ -136,7 +138,7 @@
 
 .filterItem {
   padding: 4px 6px;
-  border-radius: var(--radius-sm);
+  border-radius: $radius-sm;
 
   &:hover {
     background: var(--bg-tertiary);

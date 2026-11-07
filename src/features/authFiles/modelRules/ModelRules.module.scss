@@ -64,6 +64,7 @@
 }
 
 .back {
+  min-height: var(--control-height);
   align-self: flex-start;
   display: inline-flex;
   align-items: center;
@@ -81,82 +82,9 @@
   @include press;
 }
 
-.headRow {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 14px 24px;
-  flex-wrap: wrap;
-}
-
-.copy {
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-  min-width: 0;
-}
-
-.title {
-  margin: 0;
-  font-size: clamp(26px, 3.2vw, 30px);
-  line-height: 1.15;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  color: var(--text-primary);
-}
-
-.meta {
-  margin: 0;
-  min-height: 18px;
-  display: flex;
-  align-items: baseline;
-  flex-wrap: wrap;
-  gap: 4px 8px;
-  font-family: $font-mono;
-  font-size: 13px;
-  font-weight: 500;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0.02em;
-  color: var(--text-secondary);
-
-  &::before {
-    content: '▍';
-    color: var(--viz-success);
-    font-size: 13px;
-    line-height: 1;
-    align-self: center;
-    margin-right: 1px;
-  }
-
-  &:empty::before {
-    color: var(--text-quaternary);
-  }
-}
-
-.metaItem {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 8px;
-}
-
 .metaDot {
   color: var(--text-quaternary);
   user-select: none;
-}
-
-.headActions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.description {
-  margin: 0;
-  max-width: 68ch;
-  font-size: 13.5px;
-  line-height: 1.55;
-  color: var(--text-secondary);
 }
 
 /* ---------- 分段控件 ---------- */
@@ -172,6 +100,7 @@
 }
 
 .segment {
+  min-height: calc(var(--control-height) - 6px);
   border: 0;
   background: none;
   cursor: pointer;
@@ -224,8 +153,7 @@
 
 /* ---------- provider 导轨 ---------- */
 
-.rail,
-.railSkeleton {
+.rail {
   position: sticky;
   top: 12px;
   min-width: 0;
@@ -252,6 +180,7 @@
 }
 
 .railItem {
+  min-height: var(--control-height);
   display: flex;
   align-items: center;
   gap: 9px;
@@ -504,6 +433,7 @@
 .quietAction,
 .quietDanger,
 .addRow {
+  min-height: var(--control-height);
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -589,7 +519,7 @@
 
 /* 行内输入：静止时与纸面融为一体，悬停/聚焦时才显出输入框的形状 */
 .cell .cellInput {
-  height: 34px;
+  height: var(--control-height);
   padding: 0 10px;
   border-color: transparent;
   border-radius: 8px;
@@ -673,7 +603,7 @@
   align-items: center;
   gap: 8px;
   flex: 0 1 320px;
-  height: 36px;
+  height: var(--control-height);
   padding: 0 12px;
   border-radius: 10px;
   border: 1px solid var(--border-color);
@@ -778,13 +708,8 @@
     gap: 14px;
   }
 
-  .rail,
-  .railSkeleton {
+  .rail {
     position: static;
-  }
-
-  .railSkeleton {
-    display: none;
   }
 
   .rail {
@@ -830,9 +755,13 @@
     gap: 16px;
   }
 
-  .headRow {
-    align-items: stretch;
-    flex-direction: column;
+  .rowRemove {
+    @include touch-target;
+  }
+
+  .groupHead,
+  .groupBody {
+    padding-inline: 16px;
   }
 
   .ledgerHead {

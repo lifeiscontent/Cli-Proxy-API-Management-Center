@@ -23,7 +23,7 @@
   transition:
     background-color $transition-fast,
     border-color $transition-fast,
-    transform var(--dur-press, 160ms) var(--ease-out-strong, ease-out);
+    transform var(--dur-press) var(--ease-out-strong);
 
   &:active {
     transform: scale(0.99);

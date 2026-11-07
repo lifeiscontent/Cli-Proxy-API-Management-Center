@@ -1,5 +1,3 @@
-@use '../../../styles/mixins' as *;
-
 /* DEV-ONLY 预览页外壳：不进生产包 */
 
 .page {
@@ -105,19 +103,4 @@
   display: flex;
   flex-direction: column;
   gap: 14px;
-}
-
-.sectionHead {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.sectionTitle {
-  margin: 0;
-  font-size: 14px;
-  font-weight: 650;
-  color: var(--text-secondary);
 }

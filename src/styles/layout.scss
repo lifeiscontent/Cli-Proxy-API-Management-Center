@@ -6,7 +6,6 @@
   --sidebar-panel-width: 216px;
   --sidebar-collapsed-width: 60px;
   --sidebar-active-width: var(--sidebar-panel-width);
-  --sidebar-gap: 0px;
   --floating-control-size: 38px;
 }
 
@@ -220,11 +219,8 @@
     right: 0;
     z-index: $z-dropdown + 2;
     border: 1px solid color-mix(in srgb, var(--border-color) 74%, transparent);
-    background: color-mix(in srgb, var(--bg-primary) 88%, transparent);
-    box-shadow: 0 20px 48px rgb(0 0 0 / 0.22);
-    --glass-blur: 16px;
-    backdrop-filter: var(--glass-backdrop-filter);
-    -webkit-backdrop-filter: var(--glass-backdrop-filter);
+    background: var(--floating-surface);
+    box-shadow: var(--floating-shadow);
   }
 
   .language-menu-popover {
@@ -263,7 +259,7 @@
     }
 
     &.active {
-      color: var(--primary-color);
+      color: var(--text-primary);
       font-weight: 600;
     }
   }
@@ -839,13 +835,15 @@
 
 @media (max-width: $breakpoint-mobile) {
   :root {
-    --header-height: 74px;
+    --header-height: 76px;
     --shell-gutter: 12px;
     --sidebar-panel-width: min(280px, calc(100vw - 24px));
-    --floating-control-size: 36px;
+    --floating-control-size: 44px;
   }
 
+  // The drawer is off-canvas on mobile, so the blur must span the full width.
   .top-gradient-blur {
+    left: 0;
     height: 114px;
   }
 
@@ -864,18 +862,18 @@
       max-width: calc(
         100vw - var(--shell-gutter) - var(--shell-gutter) - var(--floating-control-size) - 14px
       );
-      padding: 5px;
-      gap: 2px;
-      border-radius: 14px;
+      padding: 4px;
+      gap: 0;
+      border-radius: 16px;
     }
 
     .mobile-sidebar-actions {
       display: inline-flex;
       top: var(--shell-gutter);
       left: var(--shell-gutter);
-      padding: 5px;
-      gap: 2px;
-      border-radius: 14px;
+      padding: 4px;
+      gap: 0;
+      border-radius: 16px;
     }
 
     .mobile-menu-btn {
@@ -907,6 +905,16 @@
       text-align: center;
       line-height: 1.2;
     }
+  }
+
+  // The open drawer covers the page, so its header actions go under the backdrop.
+  .app-shell.sidebar-is-open .main-header .header-actions {
+    visibility: hidden;
+  }
+
+  // Clear the floating close button, which sits over the drawer's top-left corner.
+  .sidebar .sidebar-header {
+    padding-left: 56px;
   }
 
   .main-body {
@@ -1011,7 +1019,8 @@
     &.main-content-logs {
       flex: 1 1 auto;
       min-height: 0;
-      padding: calc(var(--header-height) + 8px) 8px max(8px, env(safe-area-inset-bottom));
+      padding: calc(var(--header-height) + 16px) $spacing-md
+        max($spacing-md, env(safe-area-inset-bottom));
       overflow: hidden;
     }
   }

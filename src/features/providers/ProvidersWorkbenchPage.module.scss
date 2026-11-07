@@ -1,13 +1,10 @@
 @use '../../styles/mixins' as *;
-@use '../../styles/variables' as *;
 
 .page {
   display: flex;
   flex-direction: column;
   gap: 20px;
   width: 100%;
-  padding: 24px;
-  box-sizing: border-box;
 }
 
 .layout {
@@ -34,13 +31,8 @@
   min-width: 0;
 }
 
-.modelCatalogSlot {
-  margin-top: 4px;
-}
-
-@media (max-width: 768px) {
+@include mobile {
   .page {
-    padding: 16px;
     gap: 16px;
   }
 }

@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Trans, useTranslation } from 'react-i18next';
 import { Sheet } from '@/components/ui/Sheet';
 import { Button } from '@/components/ui/Button';
-import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
+import { Skeleton } from '@/components/ui/Skeleton';
 import { Input } from '@/components/ui/Input';
 import { ToggleSwitch } from '@/components/ui/ToggleSwitch';
 import { useNotificationStore } from '@/stores';
@@ -166,12 +166,9 @@ export function AuthFileDetailsSheet(props: AuthFileDetailsSheetProps) {
       }
     >
       {editor && (
-        <div className={styles.editor}>
+        <div className={styles.editor} aria-busy={editor.loading || undefined}>
           {editor.loading ? (
-            <div className={styles.loading}>
-              <LoadingSpinner size={14} />
-              <span>{t('auth_files.prefix_proxy_loading')}</span>
-            </div>
+            <AuthFileDetailsSkeleton />
           ) : (
             <>
               {editor.error && <div className={styles.error}>{editor.error}</div>}
@@ -325,5 +322,36 @@ export function AuthFileDetailsSheet(props: AuthFileDetailsSheetProps) {
         </div>
       )}
     </Sheet>
+  );
+}
+
+/** The loading state of the sheet, in the shape of the source previews and the first fields. */
+function AuthFileDetailsSkeleton() {
+  const { t } = useTranslation();
+
+  return (
+    <>
+      <span className="sr-only">{t('auth_files.prefix_proxy_loading')}</span>
+      {[8, 10].map((rows) => (
+        <div key={rows} className={styles.jsonWrapper} aria-hidden="true">
+          <span className={styles.label}>
+            <Skeleton text width={rows === 8 ? 96 : 120} />
+          </span>
+          <Skeleton rounded={10}>
+            <textarea className={styles.textarea} rows={rows} readOnly tabIndex={-1} />
+          </Skeleton>
+        </div>
+      ))}
+      <div className={styles.fields} aria-hidden="true">
+        {[t('auth_files.prefix_label'), t('auth_files.proxy_url_label')].map((label) => (
+          <div key={label} className="form-group">
+            <span>
+              <Skeleton text>{label}</Skeleton>
+            </span>
+            <Skeleton height="var(--control-height)" />
+          </div>
+        ))}
+      </div>
+    </>
   );
 }

@@ -8,21 +8,25 @@
   gap: $spacing-sm;
   border: 1px solid transparent;
   border-radius: $radius-md;
-  padding: 10px 14px;
+  // One line of text plus the 1px borders fills the control height. Padding, not
+  // min-height, sets the height, so a module can still give a compact button its own height.
+  padding: calc((var(--control-height) - 22px) / 2) 14px;
   font-weight: 600;
+  line-height: 20px;
   cursor: pointer;
   transition: all $transition-fast;
   background-color: var(--bg-secondary);
   color: var(--text-primary);
 
+  // Same ink colors as the `ink-pill` mixin, so primary actions look alike everywhere.
   &.btn-primary {
-    background-color: var(--primary-color);
-    color: var(--primary-contrast, #fff);
-    border-color: var(--primary-color);
+    background-color: var(--text-primary);
+    color: var(--bg-secondary);
+    border-color: var(--text-primary);
 
     &:hover {
-      background-color: var(--primary-hover);
-      border-color: var(--primary-hover);
+      background-color: color-mix(in srgb, var(--text-primary) 86%, var(--bg-secondary));
+      border-color: color-mix(in srgb, var(--text-primary) 86%, var(--bg-secondary));
     }
   }
 
@@ -32,7 +36,7 @@
     color: var(--text-primary);
 
     &:hover {
-      background-color: var(--bg-hover, var(--bg-tertiary));
+      background-color: var(--bg-hover);
       border-color: var(--border-hover);
     }
   }
@@ -63,24 +67,13 @@
   }
 
   &.btn-sm {
-    padding: 8px 10px;
+    padding-inline: 10px;
     font-size: 14px;
   }
 
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
-  }
-}
-
-[data-theme='dark'] {
-  .btn {
-    color: #fff;
-  }
-
-  .btn.btn-secondary,
-  .btn.btn-ghost {
-    color: #fff;
   }
 }
 
@@ -101,6 +94,15 @@ textarea {
     border-color: var(--primary-color);
     box-shadow: 0 0 0 3px rgba($primary-color, 0.18);
   }
+}
+
+// Some textareas also use `.input`; only single-line inputs take the control height.
+input.input {
+  height: var(--control-height);
+}
+
+.autocomplete-dropdown {
+  border-radius: $radius-md;
 }
 
 .form-group {
@@ -159,11 +161,6 @@ textarea {
   border: 1px solid var(--border-color);
   margin-bottom: $spacing-md;
 
-  // 确保后续内容换行显示
-  + * {
-    display: block;
-  }
-
   &.success {
     color: $success-color;
     border-color: rgba($success-color, 0.35);
@@ -187,16 +184,9 @@ textarea {
   }
 }
 
-.pill {
-  padding: 4px 10px;
-  border-radius: $radius-full;
-  background: var(--bg-secondary);
-  color: var(--text-secondary);
-  border: 1px solid var(--border-color);
-  font-size: 12px;
-}
-
 .loading-spinner {
+  display: inline-block;
+  flex-shrink: 0;
   // Fallback: legacy white spinner (in case color-mix is unsupported)
   border: 3px solid rgba(255, 255, 255, 0.2);
   border-top-color: #fff;
@@ -381,6 +371,10 @@ textarea {
 }
 
 @media (max-width: $breakpoint-mobile) {
+  .card {
+    padding: $spacing-md;
+  }
+
   .modal-overlay {
     padding: $spacing-md;
   }
@@ -552,4 +546,18 @@ textarea {
 
 .hint {
   color: var(--text-secondary);
+}
+
+// Text for screen readers only, such as the loading label of a skeleton region. It is out
+// of the flow, so it does not take a grid cell or a flex slot.
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
 }

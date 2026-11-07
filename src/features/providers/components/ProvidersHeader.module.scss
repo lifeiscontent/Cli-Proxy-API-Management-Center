@@ -1,0 +1,9 @@
+@use '../../../styles/mixins' as *;
+
+.refreshAction {
+  @include quiet-action;
+}
+
+.newAction {
+  @include ink-pill;
+}

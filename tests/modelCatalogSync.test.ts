@@ -152,12 +152,12 @@ describe('global model catalog sync', () => {
 
   test('places secondary sync first and wires model-only cache refresh', () => {
     const header = read('src/features/authFiles/components/VaultHeader.tsx');
-    const actions = header.slice(header.indexOf('<div className={styles.actions}'));
+    const actions = header.slice(header.indexOf('actions={'));
     expect(actions.indexOf('onClick={onSyncModelCatalog}')).toBeLessThan(
       actions.indexOf('onClick={onRefreshCredentials}')
     );
     expect(actions.slice(0, actions.indexOf('{onRefreshCredentials'))).toContain(
-      'styles.ghostAction'
+      'styles.quietAction'
     );
     expect(actions.slice(0, actions.indexOf('{onRefreshCredentials'))).not.toContain('title=');
     const page = read('src/features/authFiles/AuthFilesPage.tsx');

@@ -14,8 +14,8 @@ export type SectionCardProps = {
 };
 
 /**
- * 分区卡片：自然高度纵向流（替代旧的固定高度滚动吸附轮播）。
- * 表面配方与全站卡片一致：14px 圆角 / 1px 描边 / 82% color-mix。
+ * A config section: a header and its field groups in natural height. The section
+ * has no surface, so the field groups are the only cards.
  */
 export function SectionCard({
   indexLabel,

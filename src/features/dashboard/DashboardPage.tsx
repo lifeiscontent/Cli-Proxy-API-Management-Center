@@ -9,12 +9,14 @@ import {
   IconSidebarQuota,
   IconSidebarSystem,
 } from '@/components/ui/icons';
+import { Skeleton } from '@/components/ui/Skeleton';
 import { useAuthStore } from '@/stores';
 import { useHeaderRefresh } from '@/hooks/useHeaderRefresh';
 import { formatCompactNumber, formatDateValue, formatPercent } from '@/utils/format';
 import { useDashboardOverview } from './hooks/useDashboardOverview';
 import { LiveWire } from './components/LiveWire';
 import { Meter } from './components/Meter';
+import { CredentialHealthSkeleton, FleetListSkeleton } from './components/DashboardSkeletons';
 import { Sparkline } from './components/Sparkline';
 import { ThroughputChart } from './components/ThroughputChart';
 import { useCountUp, useRevealGroup, useRevealOnScroll } from '@/hooks/motion';
@@ -40,8 +42,17 @@ export function DashboardPage() {
   const serverVersion = useAuthStore((state) => state.serverVersion);
   const serverBuildDate = useAuthStore((state) => state.serverBuildDate);
 
-  const { connectionStatus, connected, config, counts, traffic, providers, credentials, refresh } =
-    useDashboardOverview();
+  const {
+    connectionStatus,
+    connected,
+    config,
+    counts,
+    traffic,
+    providers,
+    credentials,
+    credentialsLoading,
+    refresh,
+  } = useDashboardOverview();
 
   useHeaderRefresh(refresh, connected);
 
@@ -122,22 +133,26 @@ export function DashboardPage() {
       hint: t('dashboard.stat_success_hint', { total: traffic.total.toLocaleString() }),
       meter: traffic.successRate,
       tone: successRateTone,
+      loading: false,
     },
     {
       key: 'credentials',
       label: t('dashboard.stat_credentials'),
       value: credentials ? credentials.total.toLocaleString() : DASH,
-      hint: credentials
-        ? t('dashboard.stat_credentials_hint', {
-            active: credentials.active,
-            disabled: credentials.disabled + credentials.unavailable,
-          })
-        : t('dashboard.stat_credentials_empty'),
+      // While the list loads, the hint has the shape of the loaded hint.
+      hint:
+        credentials || credentialsLoading
+          ? t('dashboard.stat_credentials_hint', {
+              active: credentials?.active ?? 0,
+              disabled: (credentials?.disabled ?? 0) + (credentials?.unavailable ?? 0),
+            })
+          : t('dashboard.stat_credentials_empty'),
       meter:
         credentials && credentials.total > 0
           ? (credentials.active / credentials.total) * 100
           : null,
       tone: undefined,
+      loading: credentialsLoading,
     },
     {
       key: 'providerKeys',
@@ -146,6 +161,7 @@ export function DashboardPage() {
       hint: t('dashboard.stat_provider_keys_hint'),
       meter: null,
       tone: undefined,
+      loading: false,
     },
     {
       key: 'models',
@@ -154,6 +170,7 @@ export function DashboardPage() {
       hint: t('dashboard.stat_models_hint'),
       meter: null,
       tone: undefined,
+      loading: false,
     },
   ];
 
@@ -324,7 +341,13 @@ export function DashboardPage() {
             }
           >
             <span className={styles.statLabel}>{tile.label}</span>
-            <strong className={styles.statValue}>{tile.value}</strong>
+            <strong className={styles.statValue}>
+              {tile.loading ? <Skeleton text width="2ch" /> : tile.value}
+            </strong>
+            {tile.loading ? (
+              // Most instances have credentials, so the meter usually follows.
+              <Skeleton className={styles.statMeterSkeleton} rounded={999} aria-hidden="true" />
+            ) : null}
             {tile.meter !== null && tile.meter !== undefined && (
               <Meter
                 value={tile.meter}
@@ -333,7 +356,9 @@ export function DashboardPage() {
                 className={styles.statMeter}
               />
             )}
-            <span className={styles.statHint}>{tile.hint}</span>
+            <span className={styles.statHint}>
+              {tile.loading ? <Skeleton text>{tile.hint}</Skeleton> : tile.hint}
+            </span>
           </article>
         ))}
       </section>
@@ -360,7 +385,9 @@ export function DashboardPage() {
           <p className={styles.sectionDescription}>{t('dashboard.fleet_description')}</p>
         </header>
         <div className={styles.panel}>
-          {providers.length === 0 ? (
+          {providers.length === 0 && credentialsLoading ? (
+            <FleetListSkeleton />
+          ) : providers.length === 0 ? (
             <p className={styles.emptyNote}>{t('dashboard.fleet_empty')}</p>
           ) : (
             <ul className={styles.fleetList}>
@@ -412,7 +439,9 @@ export function DashboardPage() {
             <span className={styles.eyebrow}>{t('dashboard.health_eyebrow')}</span>
             <h2 className={styles.panelTitle}>{t('dashboard.health_title')}</h2>
           </header>
-          {!credentials || credentials.total === 0 ? (
+          {credentialsLoading ? (
+            <CredentialHealthSkeleton />
+          ) : !credentials || credentials.total === 0 ? (
             <p className={styles.emptyNote}>{t('dashboard.health_empty')}</p>
           ) : (
             <>

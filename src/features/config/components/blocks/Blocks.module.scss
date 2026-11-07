@@ -1,7 +1,6 @@
 @use '../../../../styles/mixins' as *;
 
-/* 区块编辑器（API 密钥 / 字符串列表 / 插件源认证 / 载荷规则）的共享样式。
-   规则从旧 VisualConfigEditor.module.scss 收编，几何统一到 10px 圆角并引用动效 tokens。 */
+/* 区块编辑器（API 密钥 / 字符串列表 / 插件源认证 / 载荷规则）的共享样式。 */
 
 /* ---------- 可展开输入 ---------- */
 
@@ -42,7 +41,7 @@
   line-height: 1;
   cursor: pointer;
   opacity: 0.58;
-  transition: opacity var(--dur-hover, 200ms) var(--ease-out-strong, ease-out);
+  transition: opacity var(--dur-hover) var(--ease-out-strong);
 
   &:hover {
     opacity: 1;
@@ -237,8 +236,8 @@
   }
 
   &.apiKeyDelete:focus-visible {
-    background: var(--destructive-10);
-    color: var(--error-color);
+    background: var(--danger-10);
+    color: var(--danger-color);
   }
 }
 
@@ -248,8 +247,8 @@
   }
 
   .apiKeyRow .apiKeyActions :global(.btn.btn-ghost).apiKeyDelete:hover {
-    background: var(--destructive-10);
-    color: var(--error-color);
+    background: var(--danger-10);
+    color: var(--danger-color);
   }
 }
 
@@ -287,7 +286,7 @@
   overflow: hidden;
   // 轨道 = 填充色的淡化步阶，未点亮的段也带着当前状态
   background: color-mix(in srgb, var(--strength-color) 16%, transparent);
-  transition: background-color var(--dur-hover, 200ms) var(--ease-out-strong, ease-out);
+  transition: background-color var(--dur-hover) var(--ease-out-strong);
 }
 
 .strengthSegmentFill {
@@ -299,8 +298,8 @@
   transform-origin: left center;
   // 段内比常规交互再快一档，把预算让给段间的 stagger
   transition:
-    transform var(--dur-press, 160ms) var(--ease-out-strong, ease-out),
-    background-color var(--dur-hover, 200ms) var(--ease-out-strong, ease-out);
+    transform var(--dur-press) var(--ease-out-strong),
+    background-color var(--dur-hover) var(--ease-out-strong);
 
   // 延迟写在目标态上：点亮时依次排队，熄灭是系统响应，立刻发生
   &[data-filled='true'] {
@@ -310,7 +309,7 @@
 
   // 降级只去掉位移和排队，颜色变化保留（它才是状态本身）
   @media (prefers-reduced-motion: reduce) {
-    transition: background-color var(--dur-hover, 200ms) linear;
+    transition: background-color var(--dur-hover) linear;
 
     &[data-filled='true'] {
       transition-delay: 0ms;
@@ -323,7 +322,7 @@
   font-size: 12px;
   line-height: 16px;
   color: var(--strength-color);
-  transition: color var(--dur-hover, 200ms) var(--ease-out-strong, ease-out);
+  transition: color var(--dur-hover) var(--ease-out-strong);
 }
 
 /* ---------- 插件源认证 ---------- */

@@ -9,9 +9,9 @@
   flex-shrink: 0;
   color: var(--text-secondary);
   transition:
-    transform var(--dur-press, 160ms) var(--ease-out-strong, ease-out),
-    background-color var(--dur-hover, 200ms) var(--ease-out-strong, ease-out),
-    color var(--dur-hover, 200ms) var(--ease-out-strong, ease-out);
+    transform var(--dur-press) var(--ease-out-strong),
+    background-color var(--dur-hover) var(--ease-out-strong),
+    color var(--dur-hover) var(--ease-out-strong);
 
   &:focus {
     outline: none;
@@ -72,9 +72,9 @@
   > svg {
     grid-area: 1 / 1;
     transition:
-      opacity 180ms var(--ease-out-strong, ease-out),
-      transform 180ms var(--ease-out-strong, ease-out),
-      filter 180ms var(--ease-out-strong, ease-out);
+      opacity 180ms var(--ease-out-strong),
+      transform 180ms var(--ease-out-strong),
+      filter 180ms var(--ease-out-strong);
   }
 }
 

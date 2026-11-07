@@ -1,5 +1,3 @@
-@use '../../styles/mixins' as *;
-
 .wrap {
   position: relative;
   display: inline-flex;
@@ -16,7 +14,7 @@
   justify-content: space-between;
   gap: 8px;
   width: 100%;
-  height: 40px;
+  height: var(--control-height);
   padding: 0 12px;
   border: 1px solid var(--border-color);
   border-radius: $radius-md;
@@ -50,7 +48,6 @@
 }
 
 .triggerSm {
-  height: 28px;
   padding: 0 10px;
   font-size: 12px;
   box-shadow: none;

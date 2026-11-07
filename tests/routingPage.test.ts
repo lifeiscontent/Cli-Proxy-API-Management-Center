@@ -165,7 +165,14 @@ describe('routing board rendering', () => {
     const bar = readFileSync('src/features/routing/components/RoutingSaveBar.module.scss', 'utf8');
     expect(page).toContain('@media (prefers-reduced-motion: reduce)');
     expect(card).toContain('@media (prefers-reduced-motion: reduce)');
-    expect(bar).toContain('@media (prefers-reduced-motion: reduce)');
+    // The bar buttons take their reduced-motion rules from the shared action mixins.
+    const mixins = readFileSync('src/styles/mixins.scss', 'utf8');
+    expect(bar).toContain('@include ink-pill');
+    expect(bar).toContain('@include quiet-action');
+    for (const name of ['ink-pill', 'quiet-action']) {
+      const body = mixins.split(`@mixin ${name} {`)[1]?.split('\n@mixin ')[0] ?? '';
+      expect(body).toContain('@media (prefers-reduced-motion: reduce)');
+    }
     expect(readFileSync('src/router/MainRoutes.tsx', 'utf8')).toContain(
       "{ path: '/routing', element: <RoutingPage /> }"
     );

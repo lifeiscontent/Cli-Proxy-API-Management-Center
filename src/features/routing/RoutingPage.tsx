@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next';
 import { AutocompleteInput } from '@/components/ui/AutocompleteInput';
 import { Button } from '@/components/ui/Button';
 import { EmptyState } from '@/components/ui/EmptyState';
-import { Skeleton } from '@/components/ui/Skeleton';
+import { PageHeader } from '@/components/ui/PageHeader';
 import { useHeaderRefresh } from '@/hooks/useHeaderRefresh';
 import { useRevealGroup } from '@/hooks/motion';
 import { useUnsavedChangesGuard } from '@/hooks/useUnsavedChangesGuard';
@@ -48,6 +48,7 @@ import {
 import { ChangeReviewDialog } from './components/ChangeReviewDialog';
 import { PolicyPanel } from './components/PolicyPanel';
 import { RoutingSaveBar } from './components/RoutingSaveBar';
+import { RoutingSkeleton } from './components/RoutingSkeleton';
 import { usePageTransitionLayer } from '@/components/common/PageTransitionLayer';
 import { TierLadder } from './components/TierLadder';
 import { WeightDialog } from './components/WeightDialog';
@@ -330,13 +331,7 @@ export function RoutingPage() {
 
   const renderBody = () => {
     if (loading && !board) {
-      return (
-        <div className={styles.skeletons} aria-busy="true" aria-label={t('routing.loading')}>
-          {[0, 1, 2].map((index) => (
-            <Skeleton key={index} height={96} />
-          ))}
-        </div>
-      );
+      return <RoutingSkeleton />;
     }
     if (error !== null && !board) {
       return (
@@ -381,11 +376,7 @@ export function RoutingPage() {
 
   return (
     <div className={styles.page} ref={revealRef}>
-      <header className={styles.header}>
-        <h1 className={styles.title} data-reveal>
-          {t('routing.title')}
-        </h1>
-      </header>
+      <PageHeader title={t('routing.title')} />
 
       {renderBody()}
 

@@ -14,7 +14,7 @@
   border-radius: 14px;
   border: 1px solid var(--border-color);
   background: color-mix(in srgb, var(--bg-primary) 82%, transparent);
-  transition: border-color 160ms var(--ease-out-strong, ease-out);
+  transition: border-color 160ms var(--ease-out-strong);
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -41,16 +41,10 @@
   box-shadow: 0 0 0 1px color-mix(in srgb, var(--primary-color) 40%, transparent);
 }
 
-/* 首次数据到达时的一次性级联入场；过滤/翻页/轮询不重播 */
+/* The first cards replace the skeleton and fade in once; filter, page, and poll do not
+   play it again. */
 .cardEnter {
-  animation: card-in 180ms var(--ease-out-strong, ease-out) both;
-  animation-delay: var(--card-delay, 0s);
-}
-
-@keyframes card-in {
-  from {
-    opacity: 0;
-  }
+  @include content-in;
 }
 
 /* ---------- 头部：选择 + 供应商药丸 / 账号 ---------- */
@@ -97,13 +91,14 @@
   color: var(--text-tertiary);
 }
 
-/* 窄卡片保留基本阅读宽度；空间不足时换行，不截断邮箱或项目 ID。 */
+/* Keep a minimum reading width and show one line. An email cannot wrap without a
+   break in a word, so a long account truncates; the title attribute keeps the full value. */
 .account {
   flex: 1 1 12ch;
   min-width: 0;
   letter-spacing: -0.005em;
   color: var(--text-primary);
-  overflow-wrap: anywhere;
+  @include text-ellipsis;
 }
 
 /* 无账号线索时主行回落到文件名，沿用 mono 语汇。
@@ -432,7 +427,9 @@
 }
 
 /* 图标按钮：方形紧凑的安静描边风——危险动作静默存在，hover 才显色块 */
+/* The buttons are 4px apart, so each touch area grows only into half the gap. */
 .card .actions .iconButton {
+  @include touch-target(34px);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -459,14 +456,14 @@
   .card .actions .iconButton:global(.btn-danger):hover:not(:disabled) {
     color: var(--danger-color);
     border-color: color-mix(in srgb, var(--danger-color) 45%, transparent);
-    background: var(--destructive-10);
+    background: var(--danger-10);
   }
 }
 
 /* 按压反馈：所有可点元素 scale 0.96（reduced-motion 下豁免） */
 .actions :global(.btn) {
   transition:
-    transform var(--dur-press, 160ms) var(--ease-out-strong, ease-out),
+    transform var(--dur-press) var(--ease-out-strong),
     background-color $transition-fast,
     border-color $transition-fast,
     color $transition-fast;
@@ -474,6 +471,21 @@
 
 .actions :global(.btn:active:not(:disabled)) {
   transform: scale(0.96);
+}
+
+/* AuthFileCardSkeleton: a bar with the size of the models button. The invisible icon and
+   label inside it set the width; the height is the height of a small card button. */
+.buttonSkeleton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 11px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
+  color: transparent;
+  white-space: nowrap;
 }
 
 .toggleWrap {
@@ -500,7 +512,8 @@
     width: 100%;
   }
 
-  .actionsMain > :global(.btn) {
+  .actionsMain > :global(.btn),
+  .actionsMain > .buttonSkeleton {
     flex: 1 1 auto;
     min-width: 0;
   }
@@ -511,10 +524,6 @@
 @media (prefers-reduced-motion: reduce) {
   .card {
     transition: none;
-  }
-
-  .cardEnter {
-    animation: none;
   }
 
   .actions :global(.btn) {

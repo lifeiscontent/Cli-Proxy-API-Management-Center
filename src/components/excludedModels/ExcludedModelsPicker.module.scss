@@ -27,9 +27,9 @@
   text-align: left;
   cursor: pointer;
   transition:
-    border-color var(--dur-hover, 200ms) var(--ease-out-strong, ease-out),
-    background-color var(--dur-hover, 200ms) var(--ease-out-strong, ease-out),
-    transform var(--dur-press, 160ms) var(--ease-out-strong, ease-out);
+    border-color var(--dur-hover) var(--ease-out-strong),
+    background-color var(--dur-hover) var(--ease-out-strong),
+    transform var(--dur-press) var(--ease-out-strong);
 
   /* 整条 40px 宽元素上 0.97 太橡皮；0.99 足够被感知又不显廉价。 */
   &:active:not(:disabled) {
@@ -73,7 +73,7 @@
 .chevron {
   flex-shrink: 0;
   color: var(--text-tertiary);
-  transition: transform var(--dur-hover, 200ms) var(--ease-out-strong, ease-out);
+  transition: transform var(--dur-hover) var(--ease-out-strong);
 }
 
 .triggerOpen .chevron {
@@ -94,7 +94,7 @@
   display: block;
   height: 100%;
   background: color-mix(in srgb, var(--primary-color) 70%, var(--text-primary));
-  transition: width 360ms var(--ease-out-strong, ease);
+  transition: width 360ms var(--ease-out-strong);
 }
 
 /* -------------------------------------------------------------------------- */
@@ -111,7 +111,7 @@
 
 .disclosureOpen {
   grid-template-rows: 1fr;
-  transition: grid-template-rows var(--dur-hover, 200ms) var(--ease-out-strong, ease-out);
+  transition: grid-template-rows var(--dur-hover) var(--ease-out-strong);
 }
 
 .disclosureInner {
@@ -129,7 +129,7 @@
   border-radius: $radius-md;
   background: var(--bg-secondary);
   transform-origin: top;
-  animation: excluded-panel-in var(--dur-hover, 200ms) var(--ease-out-strong, ease-out) both;
+  animation: excluded-panel-in var(--dur-hover) var(--ease-out-strong) both;
 }
 
 /* 只写 from，让元素的静止样式定义终点（与 toolbar-popover-in 同一写法）。 */
@@ -207,7 +207,7 @@
   padding: 7px 8px;
   border-radius: $radius-sm;
   cursor: pointer;
-  transition: background-color var(--dur-press, 160ms) var(--ease-out-strong, ease-out);
+  transition: background-color var(--dur-press) var(--ease-out-strong);
 
   &:focus-visible {
     outline: 2px solid var(--primary-color);
@@ -242,8 +242,8 @@
   border-radius: $radius-sm;
   background: var(--bg-primary);
   transition:
-    background-color var(--dur-press, 160ms) var(--ease-out-strong, ease-out),
-    border-color var(--dur-press, 160ms) var(--ease-out-strong, ease-out);
+    background-color var(--dur-press) var(--ease-out-strong),
+    border-color var(--dur-press) var(--ease-out-strong);
 }
 
 .rowText {
@@ -329,9 +329,9 @@
   font-size: 11px;
   cursor: pointer;
   transition:
-    background-color var(--dur-hover, 200ms) var(--ease-out-strong, ease-out),
-    color var(--dur-hover, 200ms) var(--ease-out-strong, ease-out),
-    transform var(--dur-press, 160ms) var(--ease-out-strong, ease-out);
+    background-color var(--dur-hover) var(--ease-out-strong),
+    color var(--dur-hover) var(--ease-out-strong),
+    transform var(--dur-press) var(--ease-out-strong);
 
   &:active:not(:disabled) {
     transform: scale(0.96);
@@ -382,7 +382,7 @@
   color: var(--text-primary);
   font-size: 11px;
   cursor: pointer;
-  transition: transform var(--dur-press, 160ms) var(--ease-out-strong, ease-out);
+  transition: transform var(--dur-press) var(--ease-out-strong);
 
   &:active {
     transform: scale(0.96);
@@ -431,7 +431,7 @@
 
 /* 零命中是 warning 不是 error：规则可以合法地指向目录不认识的模型。 */
 .ruleMatchNone {
-  color: var(--warning-color, #{$warning-color});
+  color: var(--warning-color);
 }
 
 .ruleWarning {
@@ -439,7 +439,7 @@
   align-items: center;
   gap: 6px;
   margin: 0;
-  color: var(--warning-color, #{$warning-color});
+  color: var(--warning-color);
   font-size: 11px;
 }
 

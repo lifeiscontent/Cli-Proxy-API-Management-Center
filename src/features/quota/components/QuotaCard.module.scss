@@ -16,9 +16,9 @@
   border: 1px solid var(--border-color);
   background: color-mix(in srgb, var(--bg-primary) 82%, transparent);
   transition:
-    transform var(--dur-hover, 200ms) var(--ease-out-strong, ease-out),
-    border-color var(--dur-hover, 200ms) var(--ease-out-strong, ease-out),
-    box-shadow var(--dur-hover, 200ms) var(--ease-out-strong, ease-out);
+    transform var(--dur-hover) var(--ease-out-strong),
+    border-color var(--dur-hover) var(--ease-out-strong),
+    box-shadow var(--dur-hover) var(--ease-out-strong);
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -29,17 +29,11 @@
   }
 }
 
-/* 首次数据到达时的一次性级联入场；切 tab / 翻页 / 刷新不重播 */
+/* The first cards replace the skeleton and fade in once; tab, page, and refresh do not
+   play it again. Only the tier preview sets a delay. */
 .cardEnter {
-  animation: quota-card-in 0.45s var(--ease-out-strong, ease-out) both;
+  @include content-in;
   animation-delay: var(--card-delay, 0s);
-}
-
-@keyframes quota-card-in {
-  from {
-    opacity: 0;
-    transform: translate3d(0, 16px, 0);
-  }
 }
 
 /* ---------- 头部：品牌图标 + 文件名 ---------- */
@@ -75,13 +69,28 @@
   color: var(--text-secondary);
 }
 
+.titles {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.account {
+  min-width: 0;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--text-primary);
+  @include text-ellipsis;
+}
+
 .fileName {
   min-width: 0;
   font-family: $font-mono;
-  font-size: 12.5px;
-  font-weight: 600;
-  letter-spacing: 0.01em;
-  color: var(--text-primary);
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--text-tertiary);
   @include text-ellipsis;
 }
 
@@ -145,53 +154,11 @@
   min-width: 0;
 }
 
-/* ---------- idle：整块 body 即点击加载的落点 ---------- */
+/* ---------- idle: the same quiet pill as the footer refresh action ---------- */
 
-.idleBody {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  width: 100%;
-  min-height: 76px;
-  padding: 12px 10px;
-  cursor: pointer;
-  border: 1px dashed var(--border-color);
-  border-radius: 10px;
-  background: none;
-  color: var(--text-tertiary);
-  transition:
-    transform var(--dur-press, 160ms) var(--ease-out-strong, ease-out),
-    border-color var(--dur-hover, 200ms) var(--ease-out-strong, ease-out),
-    color var(--dur-hover, 200ms) var(--ease-out-strong, ease-out);
-
-  &:disabled {
-    cursor: not-allowed;
-    opacity: 0.55;
-  }
-
-  &:active:not(:disabled) {
-    transform: scale(0.98);
-  }
-
-  &:focus-visible {
-    outline: 2px solid var(--primary-color);
-    outline-offset: 2px;
-  }
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .idleBody:hover:not(:disabled) {
-    border-color: color-mix(in srgb, var(--primary-color) 35%, var(--border-color));
-    border-style: solid;
-    color: var(--text-secondary);
-  }
-}
-
-.idleGlyph {
-  flex-shrink: 0;
-  opacity: 0.8;
+.actionPill.idleAction {
+  align-self: flex-start;
+  white-space: normal;
 }
 
 .idleHint {
@@ -302,10 +269,10 @@
   color: var(--text-secondary);
   white-space: nowrap;
   transition:
-    transform var(--dur-press, 160ms) var(--ease-out-strong, ease-out),
-    border-color var(--dur-hover, 200ms) var(--ease-out-strong, ease-out),
-    background-color var(--dur-hover, 200ms) var(--ease-out-strong, ease-out),
-    color var(--dur-hover, 200ms) var(--ease-out-strong, ease-out);
+    transform var(--dur-press) var(--ease-out-strong),
+    border-color var(--dur-hover) var(--ease-out-strong),
+    background-color var(--dur-hover) var(--ease-out-strong),
+    color var(--dur-hover) var(--ease-out-strong);
 
   &:disabled {
     cursor: not-allowed;
@@ -342,14 +309,12 @@
 
 @media (prefers-reduced-motion: reduce) {
   .card,
-  .idleBody,
   .actionPill,
   .glanceToggle,
   .glanceToggle svg {
     transition: none;
   }
 
-  .idleBody:active:not(:disabled),
   .actionPill:active:not(:disabled) {
     transform: none;
   }

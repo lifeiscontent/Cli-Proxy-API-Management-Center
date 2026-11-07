@@ -111,7 +111,7 @@
     "plugin_store": "Cửa hàng Plugin",
     "config_management": "Bảng cấu hình",
     "logs": "Trình xem Log",
-    "system_info": "Thông tin Trung tâm Quản lý"
+    "system_info": "Giới thiệu"
   },
   "nav_groups": {
     "operate": "Vận hành",
@@ -1635,7 +1635,7 @@
     "empty_title": "Chưa có gì để định tuyến",
     "empty_desc": "Hãy thêm API key hoặc thông tin xác thực OAuth trong Nhà cung cấp AI hoặc Tệp xác thực trước.",
     "entry": "Yêu cầu vào",
-    "model_placeholder": "Tất cả mô hình (nhập tên mô hình để xem trước tuyến)",
+    "model_placeholder": "Xem trước tuyến của mô hình",
     "models_loading": "Đang tải mô hình {{done}}/{{total}}",
     "tier_primary": "Ưu tiên",
     "tier_backup": "Dự phòng {{index}}",
@@ -1790,11 +1790,7 @@
     "load_failed": "Không thể tải cửa hàng plugin",
     "unsupported_backend": "Backend hiện tại không cung cấp API plugin store. Hãy dùng bản backend mới hơn có endpoint plugin store, sau đó khởi động lại dịch vụ.",
     "registry_failed": "Không thể kết nối registry plugin",
-    "global_status": "Trạng thái toàn cục",
-    "global_enabled": "Đang bật",
-    "global_disabled": "Đã tắt",
     "global_disabled_hint": "plugins.enabled đang là false nên plugin đã cài sẽ không có hiệu lực.",
-    "plugins_dir": "Thư mục plugin",
     "stat_available": "Khả dụng",
     "search_placeholder": "Tìm ID, tên, tác giả hoặc tag plugin...",
     "search_label": "Tìm cửa hàng plugin",
@@ -1943,13 +1939,13 @@
   },
   "language": {
     "switch": "Ngôn ngữ",
-    "chinese": "中文",
+    "chinese": "简体中文",
     "chinese_tw": "繁體中文（台灣）",
     "english": "English",
     "russian": "Русский",
     "vietnamese": "Tiếng Việt",
     "korean": "한국어",
-    "turkish": "Tiếng Thổ Nhĩ Kỳ"
+    "turkish": "Türkçe"
   },
   "theme": {
     "switch": "Giao diện",

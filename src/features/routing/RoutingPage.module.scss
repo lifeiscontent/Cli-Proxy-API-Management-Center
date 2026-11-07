@@ -26,25 +26,6 @@ $label-x: $tier-pad + 1px + $index-size + 10px; // where tier names begin
   );
 }
 
-/* ---------- header ---------- */
-
-.header {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 16px 24px;
-  flex-wrap: wrap;
-}
-
-.title {
-  margin: 0;
-  font-size: clamp(26px, 3.2vw, 30px);
-  line-height: 1.15;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  color: var(--text-primary);
-}
-
 /* ---------- layout ---------- */
 
 .layout {
@@ -63,12 +44,6 @@ $label-x: $tier-pad + 1px + $index-size + 10px; // where tier names begin
   flex-direction: column;
   gap: 16px;
   min-width: 0;
-}
-
-.skeletons {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
 }
 
 .footnote {
@@ -165,6 +140,7 @@ $label-x: $tier-pad + 1px + $index-size + 10px; // where tier names begin
 }
 
 .modelPicker {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -186,7 +162,14 @@ $label-x: $tier-pad + 1px + $index-size + 10px; // where tier names begin
   font-size: 13px;
 }
 
+/* The progress line shows only while the model lists load. It sits in the gap under the
+   entry row and takes no space, so the tiers do not move when it comes and goes. */
 .modelProgress {
+  position: absolute;
+  top: calc(100% + 2px);
+  right: 0;
+  white-space: nowrap;
+  line-height: 16px;
   font-family: $font-mono;
   font-size: 11px;
   font-variant-numeric: tabular-nums;
@@ -343,6 +326,16 @@ $label-x: $tier-pad + 1px + $index-size + 10px; // where tier names begin
 
   @include mobile {
     padding-left: 0;
+  }
+}
+
+// RoutingSkeleton: a member card is full width on phones, as MemberCard is.
+.memberSkeleton {
+  width: var(--member-width);
+  max-width: 100%;
+
+  @include mobile {
+    width: 100%;
   }
 }
 

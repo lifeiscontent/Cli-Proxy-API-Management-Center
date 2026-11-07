@@ -111,7 +111,7 @@
     "plugin_store": "Магазин плагинов",
     "config_management": "Панель конфигурации",
     "logs": "Просмотр логов",
-    "system_info": "Информация системы"
+    "system_info": "О программе"
   },
   "nav_groups": {
     "operate": "Работа",
@@ -1692,7 +1692,7 @@
     "empty_title": "Пока нечего маршрутизировать",
     "empty_desc": "Сначала добавьте API-ключ или OAuth-учётные данные в разделах «AI-провайдеры» или «Файлы авторизации».",
     "entry": "Входящий запрос",
-    "model_placeholder": "Все модели (введите модель для предпросмотра маршрута)",
+    "model_placeholder": "Предпросмотр маршрута модели",
     "models_loading": "Загрузка моделей {{done}}/{{total}}",
     "tier_primary": "Основной",
     "tier_backup": "Резерв {{index}}",
@@ -1847,11 +1847,7 @@
     "load_failed": "Не удалось загрузить магазин плагинов",
     "unsupported_backend": "Текущий бэкенд не предоставляет API магазина плагинов. Используйте новую сборку бэкенда с поддержкой магазина плагинов и перезапустите службу.",
     "registry_failed": "Не удалось обратиться к реестру плагинов",
-    "global_status": "Глобальный статус",
-    "global_enabled": "Включено",
-    "global_disabled": "Отключено",
     "global_disabled_hint": "Параметр plugins.enabled выключен, поэтому установленные плагины не будут работать.",
-    "plugins_dir": "Каталог плагинов",
     "stat_available": "Доступно",
     "search_placeholder": "Поиск по ID, названию, автору или тегу...",
     "search_label": "Поиск в магазине плагинов",
@@ -1991,13 +1987,13 @@
   },
   "language": {
     "switch": "Язык",
-    "chinese": "中文",
+    "chinese": "简体中文",
     "chinese_tw": "繁體中文（台灣）",
     "english": "English",
     "russian": "Русский",
     "vietnamese": "Tiếng Việt",
     "korean": "한국어",
-    "turkish": "Турецкий"
+    "turkish": "Türkçe"
   },
   "theme": {
     "switch": "Тема",

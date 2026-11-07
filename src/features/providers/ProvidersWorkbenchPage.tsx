@@ -12,14 +12,13 @@ import {
   type ProviderRecentUsageMap,
 } from '@/components/providers/utils';
 import type { OpenAIProviderConfig } from '@/types';
-import { ProviderHeaderCard } from './components/ProviderHeaderCard';
+import { ProvidersHeader } from './components/ProvidersHeader';
 import { ProviderCategoryList } from './components/ProviderCategoryList';
 import { ProviderResourcePanel } from './components/ProviderResourcePanel';
 import type { ProviderPanelControls } from './components/ProviderResourcePanel';
 import { SponsorCampaignCard } from './components/SponsorCampaignCard';
 import { SponsorQuickStartPanel } from './components/SponsorQuickStartPanel';
 import { ProviderSheet, type ProviderSheetHandle } from './sheets/ProviderSheet';
-import { APIKEY_FUN_DISPLAY_NAME } from './sponsor';
 import { isMultiProtocolSponsorBrand } from './sponsorDefinitions';
 import { isSponsorPartialMutationError } from './sponsorMutationRecovery';
 import { useProviderWorkbench } from './useProviderWorkbench';
@@ -290,12 +289,6 @@ export function ProvidersWorkbenchPage({ fixedBrand }: ProvidersWorkbenchPagePro
   const updatedAtLabel = workbench.snapshot
     ? formatDateTime(workbench.snapshot.fetchedAt, i18n.language)
     : t('providersPage.modelCatalog.notLoaded');
-  const headerTitle =
-    fixedBrand === 'apikeyFun'
-      ? quickStartResource
-        ? APIKEY_FUN_DISPLAY_NAME
-        : t('nav.quick_start')
-      : undefined;
   const errorBanner = workbench.errorMessage ? (
     <div className="error-box">{workbench.errorMessage}</div>
   ) : null;
@@ -392,12 +385,22 @@ export function ProvidersWorkbenchPage({ fixedBrand }: ProvidersWorkbenchPagePro
     closeSheet();
   }, [closeSheet, showNotification, t]);
 
-  // 加载状态
+  // 加载状态: the real header (it has no data yet), and the two columns as skeletons.
   if (!workbench.snapshot && workbench.isPending) {
     return (
       <div className={styles.page}>
-        <Skeleton height={120} />
-        <div className={styles.layout}>
+        <ProvidersHeader
+          totalActive={0}
+          totalResources={0}
+          providerFamilies={0}
+          updatedAtLabel={updatedAtLabel}
+          isFetching
+          onRefresh={() => void handleRefresh()}
+          onNew={() => {}}
+          isNewDisabled
+        />
+        <div className={styles.layout} aria-busy="true">
+          <span className="sr-only">{t('common.loading')}</span>
           <Skeleton height={420} />
           <Skeleton height={420} />
         </div>
@@ -408,8 +411,7 @@ export function ProvidersWorkbenchPage({ fixedBrand }: ProvidersWorkbenchPagePro
   if (!activeGroup) {
     return (
       <div className={styles.page}>
-        <ProviderHeaderCard
-          title={headerTitle}
+        <ProvidersHeader
           totalActive={0}
           totalResources={0}
           providerFamilies={0}
@@ -418,8 +420,6 @@ export function ProvidersWorkbenchPage({ fixedBrand }: ProvidersWorkbenchPagePro
           onRefresh={() => void handleRefresh()}
           onNew={() => {}}
           isNewDisabled
-          showNewAction={!fixedBrand}
-          showSummary={fixedBrand !== 'apikeyFun'}
         />
         {errorBanner}
       </div>
@@ -428,20 +428,16 @@ export function ProvidersWorkbenchPage({ fixedBrand }: ProvidersWorkbenchPagePro
 
   return (
     <div className={styles.page}>
-      <ProviderHeaderCard
-        title={headerTitle}
+      <ProvidersHeader
         totalActive={totalActive}
         totalResources={totalResources}
         providerFamilies={providerFamilies}
         updatedAtLabel={updatedAtLabel}
         isFetching={workbench.isFetching}
         isNewDisabled={disableMutations}
-        showNewAction={!fixedBrand}
-        showSummary={fixedBrand !== 'apikeyFun'}
         newLabel={t(
           providerFamilies ? 'providersPage.actions.new' : 'providersPage.categories.addProvider'
         )}
-        variant={fixedBrand === 'apikeyFun' ? 'quickStart' : undefined}
         onRefresh={() => void handleRefresh()}
         onNew={providerFamilies ? openCreate : () => setShowAvailableProviders(true)}
       />

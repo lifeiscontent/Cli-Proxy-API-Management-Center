@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type FormEvent, type ReactNode } from 'rea
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
 import { EmptyState } from '@/components/ui/EmptyState';
+import { PageHeader } from '@/components/ui/PageHeader';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { IconChevronLeft, IconFilterAll, IconNetwork, IconPlus } from '@/components/ui/icons';
 import { FloatingSaveBar } from '@/features/config/components/FloatingSaveBar';
@@ -162,6 +163,50 @@ export function ProviderRail({ items, selected, total, disabled, onSelect }: Pro
   );
 }
 
+const SKELETON_RAIL_ITEMS = [72, 96, 64, 88];
+
+/**
+ * The loading state of the workspace. It uses the classes of the rail and of a rule group,
+ * so the placeholders follow the desktop and mobile layouts.
+ */
+function WorkspaceSkeleton() {
+  return (
+    <>
+      <div className={styles.rail} aria-hidden="true">
+        <div className={styles.railList}>
+          {SKELETON_RAIL_ITEMS.map((width, index) => (
+            <div key={index} className={styles.railItem}>
+              <span className={styles.railIcon}>
+                <Skeleton width={16} height={16} rounded={4} />
+              </span>
+              <span className={styles.railLabel}>
+                <Skeleton text width={width} />
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className={styles.stage} aria-hidden="true">
+        {[0, 1].map((index) => (
+          <section key={index} className={styles.group}>
+            <header className={styles.groupHead}>
+              <Skeleton className={styles.groupIcon} />
+              <div className={styles.groupCopy}>
+                <Skeleton text width={120} />
+                <Skeleton text width={160} />
+              </div>
+            </header>
+            <div className={styles.groupBody}>
+              <Skeleton height="var(--control-height)" />
+              <Skeleton height="var(--control-height)" />
+            </div>
+          </section>
+        ))}
+      </div>
+    </>
+  );
+}
+
 export type ModelRulesWorkspaceProps = {
   kind: ModelRulesKind;
   title: string;
@@ -208,7 +253,7 @@ export function ModelRulesWorkspace({
 }: ModelRulesWorkspaceProps) {
   const { t } = useTranslation();
   const swipeRef = useEdgeSwipeBack({ onBack });
-  const revealRef = useRevealGroup<HTMLElement>();
+  const revealRef = useRevealGroup<HTMLDivElement>();
   const dirty = dirtyCount > 0;
   // 保存栏退场的那一拍仍显示最后一次的非零计数，避免闪出「0 个提供商」。
   const [shownCount, setShownCount] = useState(dirtyCount);
@@ -229,54 +274,40 @@ export function ModelRulesWorkspace({
 
   return (
     <div className={styles.page} ref={swipeRef}>
-      <header className={styles.header} ref={revealRef}>
+      <div className={styles.header} ref={revealRef}>
         <button type="button" className={styles.back} onClick={onBack} data-reveal>
           <IconChevronLeft size={15} aria-hidden="true" />
           {t('nav.auth_files')}
         </button>
-        <div className={styles.headRow} data-reveal>
-          <div className={styles.copy}>
-            <h1 className={styles.title}>{title}</h1>
-            <p className={styles.meta}>
-              {meta.map((item, index) => (
-                <span key={item} className={styles.metaItem}>
-                  {index > 0 ? (
-                    <span className={styles.metaDot} aria-hidden="true">
-                      ·
-                    </span>
-                  ) : null}
-                  {item}
-                </span>
-              ))}
-            </p>
-          </div>
-          <div className={styles.headActions}>
-            {status === 'ready' ? headerExtra : null}
-            <Segmented<ModelRulesKind>
-              label={t('model_rules.section_label')}
-              value={kind}
-              onChange={onSwitchKind}
-              options={[
-                { value: 'excluded', label: t('model_rules.kind_excluded') },
-                { value: 'alias', label: t('model_rules.kind_alias') },
-              ]}
-            />
-          </div>
-        </div>
-        <p className={styles.description} data-reveal>
-          {description}
-        </p>
-      </header>
+        <PageHeader
+          title={title}
+          meta={
+            status === 'loading'
+              ? [<Skeleton key="loading" text width={160} />]
+              : meta.map((item) => <span key={item}>{item}</span>)
+          }
+          description={description}
+          actions={
+            <>
+              {headerExtra}
+              <Segmented<ModelRulesKind>
+                label={t('model_rules.section_label')}
+                value={kind}
+                onChange={onSwitchKind}
+                options={[
+                  { value: 'excluded', label: t('model_rules.kind_excluded') },
+                  { value: 'alias', label: t('model_rules.kind_alias') },
+                ]}
+              />
+            </>
+          }
+        />
+      </div>
 
       {status === 'loading' ? (
-        <div className={styles.workspace} aria-busy="true" aria-label={t('common.loading')}>
-          <div className={styles.railSkeleton} aria-hidden="true">
-            <Skeleton height={220} rounded={16} />
-          </div>
-          <div className={styles.stage} aria-hidden="true">
-            <Skeleton height={148} rounded={16} />
-            <Skeleton height={148} rounded={16} />
-          </div>
+        <div className={styles.workspace} aria-busy="true">
+          <span className="sr-only">{t('common.loading')}</span>
+          <WorkspaceSkeleton />
         </div>
       ) : status === 'unsupported' ? (
         <div className={styles.notice}>

@@ -1,5 +1,6 @@
 import { useId, useRef, type KeyboardEvent } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Skeleton } from '@/components/ui/Skeleton';
 import { ToggleSwitch } from '@/components/ui/ToggleSwitch';
 import { ROUTING_STRATEGIES, type RoutingSettings, type RoutingStrategy } from '@/types/routing';
 import styles from '../RoutingPage.module.scss';
@@ -174,6 +175,62 @@ export function PolicyPanel({ settings, disabled = false, onChange }: PolicyPane
             }
           />
         </label>
+      </section>
+    </aside>
+  );
+}
+
+/**
+ * The loading state of PolicyPanel. The labels and hints do not depend on the data, so
+ * they show as they are; the controls are skeletons with the size of the real controls.
+ */
+export function PolicyPanelSkeleton() {
+  const { t } = useTranslation();
+
+  return (
+    <aside className={styles.policy} aria-hidden="true">
+      <div className={styles.policyHead}>
+        <h2 className={styles.policyTitle}>{t('routing.policy_title')}</h2>
+        <p className={styles.policySubtitle}>{t('routing.policy_subtitle')}</p>
+      </div>
+
+      <section className={styles.policySection}>
+        <h3 className={styles.policyLabel}>{t('routing.strategy_label')}</h3>
+        <div className={styles.strategyGroup}>
+          {ROUTING_STRATEGIES.map((strategy) => (
+            <Skeleton key={strategy} height={34} />
+          ))}
+        </div>
+        {/* The hint text depends on the strategy. The default strategy sets its size. */}
+        <Skeleton>
+          <p className={styles.policyHint}>{t('routing.strategy_round_robin_desc')}</p>
+        </Skeleton>
+      </section>
+
+      <section className={styles.policyRow}>
+        <div className={styles.policyRowText}>
+          <span className={styles.policyRowLabel}>{t('routing.affinity_label')}</span>
+          <span className={styles.policyHint}>{t('routing.affinity_desc')}</span>
+        </div>
+        <Skeleton width={44} height={24} rounded={12} />
+      </section>
+
+      <section className={styles.policySection}>
+        <h3 className={styles.policyLabel}>{t('routing.retry_label')}</h3>
+        {(
+          [
+            ['routing.request_retry', 'routing.request_retry_desc'],
+            ['routing.max_retry_credentials', 'routing.max_retry_credentials_desc'],
+          ] as const
+        ).map(([label, hint]) => (
+          <div key={label} className={styles.numberField}>
+            <span className={styles.policyRowText}>
+              <span className={styles.policyRowLabel}>{t(label)}</span>
+              <span className={styles.policyHint}>{t(hint)}</span>
+            </span>
+            <Skeleton width={60} height={32} rounded={8} />
+          </div>
+        ))}
       </section>
     </aside>
   );

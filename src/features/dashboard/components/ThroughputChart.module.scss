@@ -238,8 +238,8 @@
   pointer-events: none;
   /* 悬停换柱时滑到新位置（可中断，CSS transition 自然 retarget），入场只淡入 */
   transition:
-    left 200ms var(--ease-out-strong, ease-out),
-    transform 200ms var(--ease-out-strong, ease-out),
+    left 200ms var(--ease-out-strong),
+    transform 200ms var(--ease-out-strong),
     opacity 150ms ease-out;
 
   @starting-style {

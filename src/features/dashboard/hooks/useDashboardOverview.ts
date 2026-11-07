@@ -128,6 +128,8 @@ export function useDashboardOverview() {
   });
 
   const [authFiles, setAuthFiles] = useState<AuthFileItem[] | null>(null);
+  // False until the first credential request ends, with data or with an error.
+  const [authFilesSettled, setAuthFilesSettled] = useState(false);
 
   const loadAuthFiles = useCallback(async () => {
     if (!connected) return;
@@ -136,6 +138,8 @@ export function useDashboardOverview() {
       setAuthFiles(response.files);
     } catch {
       setAuthFiles(null);
+    } finally {
+      setAuthFilesSettled(true);
     }
   }, [connected]);
 
@@ -291,6 +295,8 @@ export function useDashboardOverview() {
     traffic,
     providers,
     credentials,
+    /** The first credential load is in progress. The panels that need it show skeletons. */
+    credentialsLoading: connected && !authFilesSettled,
     refresh,
   };
 }

@@ -17,11 +17,11 @@
   border: 1px solid var(--border-color);
   background: color-mix(in srgb, var(--bg-primary) 82%, transparent);
   transition:
-    transform var(--dur-press, 160ms) var(--ease-out-strong, ease-out),
-    border-color var(--dur-hover, 200ms) var(--ease-out-strong, ease-out),
-    box-shadow var(--dur-hover, 200ms) var(--ease-out-strong, ease-out);
+    transform var(--dur-press) var(--ease-out-strong),
+    border-color var(--dur-hover) var(--ease-out-strong),
+    box-shadow var(--dur-hover) var(--ease-out-strong);
   /* backwards：只在延迟期间持有起始帧，结束后不压住 hover/press 的 transform */
-  animation: oauth-tile-in 0.45s var(--ease-out-strong, ease-out) backwards;
+  animation: oauth-tile-in 0.45s var(--ease-out-strong) backwards;
   animation-delay: var(--tile-delay, 0ms);
 
   &:active {
@@ -172,9 +172,9 @@
   border: 1px solid var(--border-color);
   color: var(--text-tertiary);
   transition:
-    background-color var(--dur-hover, 200ms) var(--ease-out-strong, ease-out),
-    border-color var(--dur-hover, 200ms) var(--ease-out-strong, ease-out),
-    color var(--dur-hover, 200ms) var(--ease-out-strong, ease-out);
+    background-color var(--dur-hover) var(--ease-out-strong),
+    border-color var(--dur-hover) var(--ease-out-strong),
+    color var(--dur-hover) var(--ease-out-strong);
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -199,8 +199,8 @@
   .tile {
     animation: none;
     transition:
-      border-color var(--dur-hover, 200ms) ease,
-      box-shadow var(--dur-hover, 200ms) ease;
+      border-color var(--dur-hover) ease,
+      box-shadow var(--dur-hover) ease;
   }
 
   .tile:active,

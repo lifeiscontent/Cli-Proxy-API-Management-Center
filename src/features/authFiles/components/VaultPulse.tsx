@@ -1,4 +1,5 @@
-import { useMemo, type CSSProperties } from 'react';
+import { useMemo } from 'react';
+import { Skeleton } from '@/components/ui/Skeleton';
 import type { AuthFileItem } from '@/types';
 import { hasAuthFileStatusWarning } from '@/features/authFiles/constants';
 import type { AuthFileStatusBarData } from '@/features/authFiles/hooks/useAuthFilesStatusBarCache';
@@ -6,8 +7,6 @@ import styles from './VaultPulse.module.scss';
 
 /** 谱条最多渲染的凭证数；超出以 mono「+N」尾注表示。 */
 const MAX_BARS = 160;
-/** 级联入场总预算（与 useRevealGroup / ThroughputChart 同一 360ms 语汇）。 */
-const ENTRANCE_BUDGET_MS = 360;
 
 type PulseState = 'live' | 'idle' | 'warning' | 'problem';
 
@@ -19,6 +18,8 @@ type PulseBar = {
 
 export type VaultPulseProps = {
   files: AuthFileItem[];
+  /** The first load is in progress: show a placeholder strip of the same height. */
+  loading?: boolean;
   statusBarCache: Map<string, AuthFileStatusBarData>;
 };
 
@@ -38,7 +39,7 @@ const STATE_CLASS: Record<PulseState, string> = {
  * 翡翠=近期有活流量，灰=启用但无数据，琥珀=告警，红=不可用；停用整体淡化。
  * 纯装饰-信息层（aria-hidden），文字等价信息由头部 meta 行承载。
  */
-export function VaultPulse({ files, statusBarCache }: VaultPulseProps) {
+export function VaultPulse({ files, loading = false, statusBarCache }: VaultPulseProps) {
   const bars = useMemo<PulseBar[]>(
     () =>
       files.slice(0, MAX_BARS).map((file) => {
@@ -62,7 +63,14 @@ export function VaultPulse({ files, statusBarCache }: VaultPulseProps) {
   );
 
   const overflow = files.length - bars.length;
-  const delayStep = bars.length > 1 ? ENTRANCE_BUDGET_MS / (bars.length - 1) : 0;
+
+  if (loading && bars.length === 0) {
+    return (
+      <div className={styles.pulse} aria-hidden="true">
+        <Skeleton className={styles.placeholder} rounded={4} />
+      </div>
+    );
+  }
 
   if (bars.length === 0) {
     return (
@@ -75,11 +83,10 @@ export function VaultPulse({ files, statusBarCache }: VaultPulseProps) {
   return (
     <div className={styles.pulse} aria-hidden="true">
       <div className={styles.bars}>
-        {bars.map((bar, index) => (
+        {bars.map((bar) => (
           <span
             key={bar.key}
             className={`${styles.bar} ${STATE_CLASS[bar.state]} ${bar.disabled ? styles.barDisabled : ''}`}
-            style={{ '--bar-delay': `${Math.round(index * delayStep)}ms` } as CSSProperties}
           />
         ))}
       </div>

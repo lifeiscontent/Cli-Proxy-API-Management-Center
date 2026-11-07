@@ -28,9 +28,9 @@
     box-shadow: none;
     font-size: 13.5px;
     transition:
-      border-color var(--dur-hover, 200ms) var(--ease-out-strong, ease-out),
-      background-color var(--dur-hover, 200ms) var(--ease-out-strong, ease-out),
-      box-shadow var(--dur-hover, 200ms) var(--ease-out-strong, ease-out);
+      border-color var(--dur-hover) var(--ease-out-strong),
+      background-color var(--dur-hover) var(--ease-out-strong),
+      box-shadow var(--dur-hover) var(--ease-out-strong);
   }
 
   :global(.input:focus) {
@@ -40,7 +40,7 @@
   }
 
   :global(.input[aria-invalid='true']) {
-    border-color: var(--error-color);
+    border-color: var(--danger-color);
   }
 
   :global(.input:disabled) {
@@ -132,7 +132,7 @@
   box-shadow:
     1px 0 0 var(--border-color),
     0 1px 0 var(--border-color);
-  scroll-margin-top: calc(var(--header-height, 64px) + 16px);
+  scroll-margin-top: calc(var(--header-height) + 16px);
 }
 
 /* 控件槽宽度分三档；百分比兜底保证标题列永远有一半以上的位置。 */
@@ -194,7 +194,7 @@
 }
 
 .rowError {
-  color: var(--error-color);
+  color: var(--danger-color);
   font-size: 12px;
   font-weight: 500;
   line-height: 1.5;
@@ -224,7 +224,7 @@
   background: var(--bg-secondary);
   box-shadow: none;
   font-size: 13.5px;
-  transition: border-color var(--dur-hover, 200ms) var(--ease-out-strong, ease-out);
+  transition: border-color var(--dur-hover) var(--ease-out-strong);
 
   &:focus-visible,
   &[aria-expanded='true'] {
@@ -233,7 +233,7 @@
   }
 
   &[aria-invalid='true'] {
-    border-color: var(--error-color);
+    border-color: var(--danger-color);
   }
 
   &:disabled {
@@ -321,14 +321,14 @@
 .fieldAnchor {
   display: block;
   min-width: 0;
-  border-radius: var(--radius-md, 8px);
-  scroll-margin-top: calc(var(--header-height, 64px) + 16px);
+  border-radius: $radius-md;
+  scroll-margin-top: calc(var(--header-height) + 16px);
 }
 
 /* 内描边 + 淡底色：行位于 overflow:hidden 的列表里，外扩的 box-shadow 会被裁掉，
    且行的分隔线本身就是 box-shadow，所以脉冲改走 outline（向内偏移）。 */
 .fieldHighlightActive {
-  animation: config-field-highlight 1.8s var(--ease-out-strong, ease-out);
+  animation: config-field-highlight 1.8s var(--ease-out-strong);
 }
 
 @keyframes config-field-highlight {

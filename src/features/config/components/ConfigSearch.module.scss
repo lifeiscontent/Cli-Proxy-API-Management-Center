@@ -13,7 +13,6 @@
   }
 
   :global(.input) {
-    height: 38px;
     border-radius: 10px;
     font-size: 13px;
   }
@@ -44,13 +43,13 @@
   padding: 6px;
   border: 1px solid var(--border-color);
   border-radius: 12px;
-  background: var(--floating-surface, var(--bg-primary));
+  background: var(--floating-surface);
   box-shadow: var(
     --floating-shadow,
     0 14px 32px color-mix(in srgb, var(--text-primary) 16%, transparent)
   );
   transform-origin: top center;
-  animation: config-search-in var(--dur-press, 160ms) var(--ease-out-strong, ease-out) both;
+  animation: config-search-in var(--dur-press) var(--ease-out-strong) both;
 }
 
 @keyframes config-search-in {

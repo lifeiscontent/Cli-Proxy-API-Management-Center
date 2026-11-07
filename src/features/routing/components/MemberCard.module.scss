@@ -29,6 +29,11 @@
   &:focus-within {
     border-color: var(--border-hover);
   }
+
+  @include mobile {
+    display: flex;
+    width: 100%;
+  }
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -67,8 +72,11 @@
   }
 }
 
+// The handle touch area reaches 7px past the card edge and the menu area 1px,
+// so together they fill the 8px gap between cards without overlap.
 .handle {
   @include button-reset;
+  @include touch-target(40px);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -113,6 +121,12 @@
   gap: 2px;
   min-width: 0;
   max-width: 220px;
+
+  // Phones show one member per row, so the name can use the full row.
+  @include mobile {
+    flex: 1;
+    max-width: none;
+  }
 }
 
 .name {
@@ -160,6 +174,7 @@
 
 .menuButton {
   @include button-reset;
+  @include touch-target;
   display: inline-flex;
   align-items: center;
   justify-content: center;

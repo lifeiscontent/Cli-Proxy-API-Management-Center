@@ -1,4 +1,4 @@
-import { useState, type CSSProperties } from 'react';
+import { useState } from 'react';
 import { getAuthFileRefreshKey } from '@/features/authFiles/manualRefresh';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
@@ -50,8 +50,8 @@ export type AuthFileCardProps = {
   cooldownResetting: Record<string, boolean>;
   quotaFilterType: AuthFileQuotaFilter;
   statusBarCache: Map<string, AuthFileStatusBarData>;
-  /** One-time entrance delay; null/undefined disables entrance motion. */
-  entranceDelayMs?: number | null;
+  /** Fade in once on mount, when the card replaces the loading skeleton. */
+  entrance?: boolean;
   onShowModels: (file: AuthFileItem) => void;
   onDownload: (name: string) => void;
   onManualRefresh: (file: AuthFileItem) => void;
@@ -76,7 +76,7 @@ export function AuthFileCard(props: AuthFileCardProps) {
     cooldownResetting,
     quotaFilterType,
     statusBarCache,
-    entranceDelayMs,
+    entrance = false,
     onShowModels,
     onDownload,
     onManualRefresh,
@@ -119,24 +119,19 @@ export function AuthFileCard(props: AuthFileCardProps) {
     ? formatDateTimeValue(file.siwcExpiresAt, i18n.language)
     : '';
 
-  // Capture the entrance delay once so subsequent updates do not interrupt it.
-  const [mountEntranceDelayMs] = useState<number | null>(entranceDelayMs ?? null);
+  // Read the entrance flag on mount only, so a later update does not restart the fade.
+  const [mountEntrance] = useState(entrance);
   const cardClasses = [
     styles.card,
     compact ? styles.cardCompact : '',
     selected ? styles.cardSelected : '',
     file.disabled === true ? styles.cardDisabled : '',
-    mountEntranceDelayMs != null ? styles.cardEnter : '',
+    mountEntrance ? styles.cardEnter : '',
   ]
     .filter(Boolean)
     .join(' ');
-  const cardStyle =
-    mountEntranceDelayMs != null
-      ? ({ '--card-delay': `${mountEntranceDelayMs}ms` } as CSSProperties)
-      : undefined;
-
   return (
-    <article className={cardClasses} style={cardStyle}>
+    <article className={cardClasses}>
       <header className={styles.head}>
         {!isRuntimeOnly && (
           <SelectionCheckbox

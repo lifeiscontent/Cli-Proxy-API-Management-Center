@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
+import { PageHeader } from '@/components/ui/PageHeader';
 import { IconRefreshCw, IconUpload } from '@/components/ui/icons';
 import { useRevealGroup } from '@/hooks/motion';
 import styles from './VaultHeader.module.scss';
@@ -23,8 +24,8 @@ export type VaultHeaderProps = {
 };
 
 /**
- * 凭证库头部：eyebrow（▍游标前缀）+ 标题 + mono 遥测 meta 行 + 动作区。
- * meta 行同时承载 VaultPulse 的文字等价信息（谱条本身 aria-hidden）。
+ * Auth files header. The meta line also gives the text for VaultPulse, whose bar is
+ * aria-hidden.
  */
 export function VaultHeader(props: VaultHeaderProps) {
   const {
@@ -48,78 +49,65 @@ export function VaultHeader(props: VaultHeaderProps) {
   const revealRef = useRevealGroup<HTMLElement>();
 
   return (
-    <header className={styles.header} ref={revealRef}>
-      <div className={styles.copy}>
-        <h1 className={styles.title} data-reveal>
-          {t('auth_files.title')}
-        </h1>
-        <p className={styles.meta} data-reveal>
-          <span className={styles.metaTotal}>
-            {t('auth_files.meta_total', { count: totalCount })}
-          </span>
-          <span className={styles.metaDot} aria-hidden="true">
-            ·
-          </span>
-          <span className={activeCount > 0 ? styles.metaActive : styles.metaMuted}>
-            {t('auth_files.meta_active', { count: activeCount })}
-          </span>
-          {problemCount > 0 && (
-            <>
-              <span className={styles.metaDot} aria-hidden="true">
-                ·
-              </span>
-              <span className={styles.metaProblem}>
-                {t('auth_files.meta_problem', { count: problemCount })}
-              </span>
-            </>
+    <PageHeader
+      ref={revealRef}
+      title={t('auth_files.title')}
+      meta={[
+        <span>{t('auth_files.meta_total', { count: totalCount })}</span>,
+        <span data-tone={activeCount > 0 ? 'success' : 'muted'}>
+          {t('auth_files.meta_active', { count: activeCount })}
+        </span>,
+        problemCount > 0 && (
+          <span data-tone="failure">{t('auth_files.meta_problem', { count: problemCount })}</span>
+        ),
+      ]}
+      actions={
+        <>
+          {onSyncModelCatalog && (
+            <button
+              type="button"
+              className={styles.quietAction}
+              onClick={onSyncModelCatalog}
+              disabled={modelCatalogSyncDisabled || syncingModelCatalog}
+              aria-busy={syncingModelCatalog}
+            >
+              {syncingModelCatalog ? <LoadingSpinner size={14} /> : <IconRefreshCw size={14} />}
+              {t('auth_files.sync_catalog_button')}
+            </button>
           )}
-        </p>
-      </div>
-      <div className={styles.actions} data-reveal>
-        {onSyncModelCatalog && (
+          {onRefreshCredentials && (
+            <button
+              type="button"
+              className={styles.quietAction}
+              onClick={onRefreshCredentials}
+              disabled={
+                disableControls || loading || refreshingCredentials || credentialRefreshDisabled
+              }
+            >
+              {refreshingCredentials ? <LoadingSpinner size={14} /> : <IconRefreshCw size={14} />}
+              {t('auth_files.refresh_all_button')}
+            </button>
+          )}
           <button
             type="button"
-            className={styles.ghostAction}
-            onClick={onSyncModelCatalog}
-            disabled={modelCatalogSyncDisabled || syncingModelCatalog}
-            aria-busy={syncingModelCatalog}
+            className={styles.quietAction}
+            onClick={onRefresh}
+            disabled={loading || refreshing}
           >
-            {syncingModelCatalog ? <LoadingSpinner size={14} /> : <IconRefreshCw size={14} />}
-            {t('auth_files.sync_catalog_button')}
+            <IconRefreshCw size={14} data-spinning={refreshing} />
+            {t('common.refresh')}
           </button>
-        )}
-        {onRefreshCredentials && (
           <button
             type="button"
-            className={styles.ghostAction}
-            onClick={onRefreshCredentials}
-            disabled={
-              disableControls || loading || refreshingCredentials || credentialRefreshDisabled
-            }
+            className={styles.primaryAction}
+            onClick={onUpload}
+            disabled={disableControls || uploading}
           >
-            {refreshingCredentials ? <LoadingSpinner size={14} /> : <IconRefreshCw size={14} />}
-            {t('auth_files.refresh_all_button')}
+            {uploading ? <LoadingSpinner size={14} /> : <IconUpload size={15} />}
+            {t('auth_files.upload_button')}
           </button>
-        )}
-        <button
-          type="button"
-          className={styles.ghostAction}
-          onClick={onRefresh}
-          disabled={loading || refreshing}
-        >
-          <IconRefreshCw size={14} className={refreshing ? styles.spinning : undefined} />
-          {t('common.refresh')}
-        </button>
-        <button
-          type="button"
-          className={styles.primaryAction}
-          onClick={onUpload}
-          disabled={disableControls || uploading}
-        >
-          {uploading ? <LoadingSpinner size={14} /> : <IconUpload size={15} />}
-          {t('auth_files.upload_button')}
-        </button>
-      </div>
-    </header>
+        </>
+      }
+    />
   );
 }

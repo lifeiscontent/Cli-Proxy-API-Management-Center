@@ -1,9 +1,6 @@
-@use '../../../styles/mixins' as *;
-@use '../../../styles/variables' as *;
-
 .root {
   border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
+  border-radius: $radius-md;
   background: var(--bg-primary);
   overflow: hidden;
 }
@@ -26,7 +23,7 @@
   }
 
   &:hover {
-    background: color-mix(in srgb, var(--accent-bg) 35%, transparent);
+    background: color-mix(in srgb, var(--bg-tertiary) 35%, transparent);
   }
 
   &:focus-visible {
@@ -45,15 +42,15 @@
 
 .summaryHint {
   font-size: 12px;
-  color: var(--muted-foreground);
+  color: var(--text-secondary);
   font-weight: 400;
 }
 
 .chevron {
   width: 16px;
   height: 16px;
-  color: var(--muted-foreground);
-  transition: transform var(--dur-hover, 200ms) var(--ease-out-strong, ease-out);
+  color: var(--text-secondary);
+  transition: transform var(--dur-hover) var(--ease-out-strong);
   flex-shrink: 0;
 
   .root[open] & {
@@ -75,7 +72,7 @@
    与程序化 details.open = true（搜索跳转强制展开）不会互相打架。 */
 .root[open] > .content,
 .root[open] > .contentFlush {
-  animation: collapsible-content-in var(--dur-press, 160ms) var(--ease-out-strong, ease-out);
+  animation: collapsible-content-in var(--dur-press) var(--ease-out-strong);
 }
 
 @keyframes collapsible-content-in {

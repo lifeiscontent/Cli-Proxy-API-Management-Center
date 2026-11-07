@@ -2,7 +2,10 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
+import { Collapsible } from '@/components/ui/Collapsible';
+import { Skeleton } from '@/components/ui/Skeleton';
 import { Modal } from '@/components/ui/Modal';
+import { PageHeader } from '@/components/ui/PageHeader';
 import { ToggleSwitch } from '@/components/ui/ToggleSwitch';
 import {
   IconGithub,
@@ -21,6 +24,7 @@ import {
 } from '@/stores';
 import { apiClient, configApi, modelsApi, versionApi } from '@/services/api';
 import { useApiKeysForModels } from '@/hooks/useApiKeysForModels';
+import { MOBILE_MEDIA_QUERY, useMediaQuery } from '@/hooks/useMediaQuery';
 import { formatDateTimeValue } from '@/utils/format';
 import { classifyModels } from '@/utils/models';
 import { STORAGE_KEY_AUTH } from '@/utils/constants';
@@ -100,6 +104,7 @@ export function SystemPage() {
   const models = useModelsStore((state) => state.models);
   const modelsStoreLoading = useModelsStore((state) => state.loading);
   const fetchModelsFromStore = useModelsStore((state) => state.fetchModels);
+  const isMobile = useMediaQuery(MOBILE_MEDIA_QUERY);
 
   const [modelStatus, setModelStatus] = useState<{
     type: 'warning' | 'error';
@@ -355,9 +360,9 @@ export function SystemPage() {
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.pageTitle}>{t('system_info.title')}</h1>
+      <PageHeader title={t('system_info.title')} />
       <div className={styles.content}>
-        <Card className={styles.aboutCard}>
+        <Card className={styles.bareCard}>
           <div className={styles.aboutHeader}>
             <img src={INLINE_LOGO_JPEG} alt="CPAMC" className={styles.aboutLogo} />
             <div className={styles.aboutTitle}>{t('system_info.about_title')}</div>
@@ -407,7 +412,7 @@ export function SystemPage() {
           </div>
         </Card>
 
-        <Card title={t('system_info.quick_links_title')}>
+        <Card title={t('system_info.quick_links_title')} className={styles.bareCard}>
           <p className={styles.sectionDescription}>{t('system_info.quick_links_desc')}</p>
           <div className={styles.quickLinks}>
             <a
@@ -502,11 +507,11 @@ export function SystemPage() {
           }
         >
           <p className={styles.sectionDescription}>{t('system_info.models_desc')}</p>
-          {modelStatus && models.length === 0 && (
+          {modelStatus && models.length === 0 && !modelsLoading && (
             <div className={`status-badge ${modelStatus.type}`}>{modelStatus.message}</div>
           )}
           {modelsLoading && models.length === 0 ? (
-            <div className="hint">{t('common.loading')}</div>
+            <ModelGroupsSkeleton collapsed={isMobile} label={t('system_info.models_loading')} />
           ) : models.length === 0 ? (
             modelStatus ? null : (
               <div className="hint">{t('system_info.models_empty')}</div>
@@ -515,29 +520,39 @@ export function SystemPage() {
             <div className="item-list">
               {groupedModels.map((group) => {
                 const iconSrc = getIconForCategory(group.id);
-                return (
+                const title = (
+                  <span className={styles.groupTitle}>
+                    {iconSrc && <img src={iconSrc} alt="" className={styles.groupIcon} />}
+                    <span className="item-title">{group.label}</span>
+                  </span>
+                );
+                const count = t('system_info.models_count', { count: group.items.length });
+                const tags = (
+                  <div className={styles.modelTags}>
+                    {group.items.map((model) => (
+                      <span
+                        key={`${model.name}-${model.alias ?? 'default'}`}
+                        className={styles.modelTag}
+                        title={model.description || ''}
+                      >
+                        <span className={styles.modelName}>{model.name}</span>
+                        {model.alias && <span className={styles.modelAlias}>{model.alias}</span>}
+                      </span>
+                    ))}
+                  </div>
+                );
+                // Phones show one model per line, so the groups start collapsed there.
+                return isMobile ? (
+                  <Collapsible key={group.id} label={title} hint={count}>
+                    {tags}
+                  </Collapsible>
+                ) : (
                   <div key={group.id} className="item-row">
                     <div className="item-meta">
-                      <div className={styles.groupTitle}>
-                        {iconSrc && <img src={iconSrc} alt="" className={styles.groupIcon} />}
-                        <span className="item-title">{group.label}</span>
-                      </div>
-                      <div className="item-subtitle">
-                        {t('system_info.models_count', { count: group.items.length })}
-                      </div>
+                      {title}
+                      <div className="item-subtitle">{count}</div>
                     </div>
-                    <div className={styles.modelTags}>
-                      {group.items.map((model) => (
-                        <span
-                          key={`${model.name}-${model.alias ?? 'default'}`}
-                          className={styles.modelTag}
-                          title={model.description || ''}
-                        >
-                          <span className={styles.modelName}>{model.name}</span>
-                          {model.alias && <span className={styles.modelAlias}>{model.alias}</span>}
-                        </span>
-                      ))}
-                    </div>
+                    {tags}
                   </div>
                 );
               })}
@@ -588,6 +603,60 @@ export function SystemPage() {
           />
         </div>
       </Modal>
+    </div>
+  );
+}
+
+const SKELETON_GROUP_COUNT = 3;
+const SKELETON_TAG_WIDTHS = [96, 132, 84, 148, 110, 72];
+
+/** The loading state of the model list, in the shape of its group rows. */
+function ModelGroupsSkeleton({ collapsed, label }: { collapsed: boolean; label: string }) {
+  return (
+    <div className="item-list" aria-busy="true">
+      <span className="sr-only">{label}</span>
+      {Array.from({ length: SKELETON_GROUP_COUNT }, (_, index) =>
+        // Phones show the groups collapsed, so the skeleton shows only the summary rows.
+        collapsed ? (
+          <Collapsible
+            key={index}
+            aria-hidden="true"
+            inert
+            label={
+              <span className={styles.groupTitle}>
+                <Skeleton className={styles.groupIcon} rounded={4} />
+                <span className="item-title">
+                  <Skeleton text width={88} />
+                </span>
+              </span>
+            }
+            hint={<Skeleton text width={56} />}
+          />
+        ) : (
+          <div key={index} className="item-row" aria-hidden="true">
+            <div className="item-meta">
+              <span className={styles.groupTitle}>
+                <Skeleton className={styles.groupIcon} rounded={4} />
+                <span className="item-title">
+                  <Skeleton text width={88} />
+                </span>
+              </span>
+              <div className="item-subtitle">
+                <Skeleton text width={64} />
+              </div>
+            </div>
+            <div className={styles.modelTags}>
+              {SKELETON_TAG_WIDTHS.map((width) => (
+                <span key={width} className={styles.modelTag}>
+                  <span className={styles.modelName}>
+                    <Skeleton text width={width} />
+                  </span>
+                </span>
+              ))}
+            </div>
+          </div>
+        )
+      )}
     </div>
   );
 }

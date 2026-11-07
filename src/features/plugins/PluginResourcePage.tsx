@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { EmptyState } from '@/components/ui/EmptyState';
+import { Skeleton } from '@/components/ui/Skeleton';
 import { useHeaderRefresh } from '@/hooks/useHeaderRefresh';
 import { pluginsApi } from '@/services/api';
 import { useAuthStore } from '@/stores';
@@ -90,8 +91,10 @@ export function PluginResourcePage() {
   return (
     <div className={styles.page}>
       {loading ? (
-        <div className={styles.stateShell}>
-          <div className={styles.statusPanel}>{t('common.loading')}</div>
+        // The plugin page fills this area, so the skeleton fills it too.
+        <div className={styles.frame} aria-busy="true">
+          <span className="sr-only">{t('common.loading')}</span>
+          <Skeleton className={styles.frameSkeleton} rounded={0} />
         </div>
       ) : error ? (
         <div className={styles.stateShell}>

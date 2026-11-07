@@ -6,11 +6,12 @@ export function LoadingSpinner({
   className?: string;
 }) {
   return (
-    <div
+    // Decorative: callers render the spinner inside a button or next to a visible
+    // label, so the label, not the spinner, tells assistive tech what is loading.
+    <span
       className={`loading-spinner${className ? ` ${className}` : ''}`}
       style={{ width: size, height: size, borderWidth: size / 7 }}
-      role="status"
-      aria-live="polite"
+      aria-hidden="true"
     />
   );
 }
