@@ -1690,7 +1690,7 @@
     "empty_title": "还没有可调度的上游",
     "empty_desc": "先在 AI 提供商或认证文件中添加 API Key 或 OAuth 凭证。",
     "entry": "请求进入",
-    "model_placeholder": "所有模型（输入模型名预览路由）",
+    "model_placeholder": "预览模型的路由",
     "models_loading": "正在读取模型 {{done}}/{{total}}",
     "tier_primary": "首选",
     "tier_backup": "备用 {{index}}",

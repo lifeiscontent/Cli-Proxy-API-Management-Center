@@ -1,7 +1,9 @@
+@use '../../../styles/mixins' as *;
+
 /* ============================================================
  * VaultPulse —— 凭证谱条（签名元素）。
- * 颜色 + 高度双通道编码；scaleY 自底部生长入场，
- * 总预算 360ms，在头部 reveal 之后（基准延迟 0.35s）起播。
+ * 颜色 + 高度双通道编码。The strip always has its height, and a skeleton holds it during
+ * the first load. The bars replace the skeleton and fade in once, all together.
  * ============================================================ */
 
 .pulse {
@@ -24,6 +26,12 @@
   padding-bottom: 3px;
   border-bottom: 1px solid color-mix(in srgb, var(--border-color) 85%, transparent);
   mask-image: linear-gradient(to right, transparent, #000 2%, #000 98%, transparent);
+  @include content-in;
+}
+
+.placeholder {
+  flex: 1;
+  height: 100%;
 }
 
 .bar {
@@ -31,15 +39,6 @@
   min-width: 2px;
   max-width: 14px;
   border-radius: 2px 2px 1px 1px;
-  transform-origin: bottom;
-  animation: pulse-bar-in 0.45s var(--ease-out-strong, ease-out) both;
-  animation-delay: calc(0.35s + var(--bar-delay, 0s));
-}
-
-@keyframes pulse-bar-in {
-  from {
-    transform: scaleY(0);
-  }
 }
 
 /* 高度编码状态（色盲冗余通道） */
@@ -86,10 +85,4 @@
   border-bottom: 2px dashed var(--text-quaternary);
   opacity: 0.6;
   margin-bottom: 6px;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .bar {
-    animation: none;
-  }
 }

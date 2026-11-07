@@ -160,13 +160,13 @@ $cell-height: 36px;
   field-sizing: content;
 
   &[aria-invalid='true'] {
-    border-color: var(--error-color);
+    border-color: var(--danger-color);
   }
 }
 
 .error {
   margin: 0;
-  color: var(--error-color);
+  color: var(--danger-color);
   font-size: 12px;
   line-height: 1.45;
 }
@@ -220,8 +220,8 @@ $cell-height: 36px;
 
 /* A destructive action stays as quiet as its neighbours until it is aimed at. */
 .deleteBtn:focus-visible {
-  background: var(--destructive-10);
-  color: var(--error-color);
+  background: var(--danger-10);
+  color: var(--danger-color);
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -231,8 +231,8 @@ $cell-height: 36px;
   }
 
   .deleteBtn:hover:not(:disabled) {
-    background: var(--destructive-10);
-    color: var(--error-color);
+    background: var(--danger-10);
+    color: var(--danger-color);
   }
 }
 

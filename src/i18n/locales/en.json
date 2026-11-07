@@ -112,7 +112,7 @@
     "plugins": "Plugins",
     "config_management": "Config Panel",
     "logs": "Logs Viewer",
-    "system_info": "Management Center Info"
+    "system_info": "About"
   },
   "nav_groups": {
     "operate": "Operate",
@@ -1697,7 +1697,7 @@
     "empty_title": "Nothing to route yet",
     "empty_desc": "Add an API key or OAuth credential under AI Providers or Auth Files first.",
     "entry": "Request in",
-    "model_placeholder": "All models (type a model to preview its route)",
+    "model_placeholder": "Preview a model's route",
     "models_loading": "Loading models {{done}}/{{total}}",
     "tier_primary": "Preferred",
     "tier_backup": "Fallback {{index}}",

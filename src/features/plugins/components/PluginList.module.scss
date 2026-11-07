@@ -10,6 +10,7 @@
 }
 
 .list {
+  container-type: inline-size;
   min-width: 0;
   overflow: hidden;
   border: 1px solid var(--border-color);
@@ -34,7 +35,7 @@
   justify-content: space-between;
   gap: $spacing-md;
   padding: 12px $spacing-md;
-  border: 1px solid var(--destructive-30);
+  border: 1px solid var(--danger-30);
   border-radius: $radius-md;
   background: var(--bg-error-light);
   color: var(--danger-color);

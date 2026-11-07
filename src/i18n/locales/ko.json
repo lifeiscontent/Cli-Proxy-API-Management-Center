@@ -112,7 +112,7 @@
     "plugins": "플러그인",
     "config_management": "설정 패널",
     "logs": "로그 뷰어",
-    "system_info": "관리 센터 정보"
+    "system_info": "정보"
   },
   "nav_groups": {
     "operate": "운영",
@@ -1697,7 +1697,7 @@
     "empty_title": "아직 라우팅할 대상이 없습니다",
     "empty_desc": "먼저 AI 제공자 또는 인증 파일에서 API 키나 OAuth 자격 증명을 추가하세요.",
     "entry": "요청 유입",
-    "model_placeholder": "모든 모델(모델명을 입력해 경로 미리보기)",
+    "model_placeholder": "모델 경로 미리보기",
     "models_loading": "모델 불러오는 중 {{done}}/{{total}}",
     "tier_primary": "선호",
     "tier_backup": "대체 {{index}}",

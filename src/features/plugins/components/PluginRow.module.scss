@@ -24,6 +24,10 @@
     }
   }
 
+  @container (max-width: 720px) {
+    grid-template-columns: 40px minmax(0, 1fr);
+  }
+
   @include mobile {
     grid-template-columns: 36px minmax(0, 1fr);
     row-gap: 10px;
@@ -222,8 +226,15 @@
 
 .actions {
   display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
   align-items: center;
   gap: 2px;
+
+  @container (max-width: 720px) {
+    grid-column: 2;
+    justify-content: flex-start;
+  }
 
   @include mobile {
     grid-column: 2 / -1;
@@ -381,7 +392,7 @@
   }
 
   .danger:hover:not(:disabled) {
-    background: var(--destructive-10);
+    background: var(--danger-10);
     color: var(--danger-color);
   }
 

@@ -1,12 +1,10 @@
-.container {
-  width: 100%;
-}
+@use '../styles/mixins' as *;
 
-.pageTitle {
-  font-size: 28px;
-  font-weight: 700;
-  color: var(--text-primary);
-  margin: 0 0 $spacing-xl 0;
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xl;
+  width: 100%;
 }
 
 .content {
@@ -15,8 +13,13 @@
   gap: $spacing-xl;
 }
 
-.aboutCard {
-  overflow: hidden;
+// A section whose items are cards. It has no surface of its own, so the cards
+// do not sit inside another card.
+.bareCard:global(.card) {
+  padding: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
 }
 
 .aboutHeader {
@@ -26,7 +29,7 @@
   justify-content: center;
   width: 100%;
   gap: $spacing-md;
-  padding: $spacing-lg 0 $spacing-xl;
+  padding-bottom: $spacing-xl;
 }
 
 .aboutLogo {
@@ -127,19 +130,6 @@
   font-size: 12px;
   color: var(--text-tertiary);
   line-height: 1.4;
-}
-
-.section {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-md;
-}
-
-.sectionTitle {
-  font-size: 20px;
-  font-weight: 600;
-  color: var(--text-primary);
-  margin: 0 0 $spacing-md 0;
 }
 
 .sectionDescription {
@@ -285,28 +275,51 @@
   }
 }
 
-@media (max-width: 768px) {
+@include mobile {
+  .container {
+    gap: $spacing-md;
+  }
+
+  .content {
+    gap: $spacing-lg;
+  }
+
+  // The page header already names the page, so on phones the hero is a compact row:
+  // a small logo next to the product name.
+  .aboutHeader {
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: $spacing-md;
+    padding: 0 0 $spacing-md;
+  }
+
   .aboutLogo {
-    width: 92px;
-    height: 92px;
-    border-radius: 22px;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    box-shadow: none;
   }
 
   .aboutTitle {
-    width: min(100%, 24ch);
-    font-size: clamp(22px, 6.6vw, 34px);
+    width: auto;
+    font-size: 18px;
     font-weight: 700;
-    line-height: 1.18;
-    letter-spacing: -0.012em;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    text-align: left;
   }
-}
 
-@media (max-width: 520px) {
-  .aboutTitle {
-    width: min(100%, 19ch);
-    font-size: clamp(20px, 7.2vw, 28px);
-    font-weight: 600;
-    line-height: 1.22;
-    letter-spacing: -0.006em;
+  .infoTile,
+  .tapTile {
+    min-height: 0;
+    padding: $spacing-md;
+  }
+
+  .tileHeader {
+    min-height: 0;
+  }
+
+  .tileValue {
+    font-size: 18px;
   }
 }

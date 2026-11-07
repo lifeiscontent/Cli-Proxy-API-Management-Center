@@ -50,7 +50,7 @@ $pair-columns: $index-width minmax(0, 1fr) $arrow-width minmax(0, 1fr) $tools-wi
     transform $hover $ease;
 
   &[data-invalid='true'] {
-    border-color: var(--destructive-30);
+    border-color: var(--danger-30);
   }
 
   /* 新增 / 重排落位时轻轻浮入：位移很小，只为交代「它在这里」。 */
@@ -129,7 +129,7 @@ $pair-columns: $index-width minmax(0, 1fr) $arrow-width minmax(0, 1fr) $tools-wi
   margin: 0 16px 14px;
   padding: 10px 12px;
   border-radius: 8px;
-  background: var(--destructive-10);
+  background: var(--danger-10);
 }
 
 .noticeMessage {
@@ -137,7 +137,7 @@ $pair-columns: $index-width minmax(0, 1fr) $arrow-width minmax(0, 1fr) $tools-wi
   align-items: flex-start;
   gap: 8px;
   margin: 0;
-  color: var(--error-color);
+  color: var(--danger-color);
   font-size: 12.5px;
   line-height: 1.5;
 
@@ -212,7 +212,7 @@ $pair-columns: $index-width minmax(0, 1fr) $arrow-width minmax(0, 1fr) $tools-wi
 
 /* 删除平时与其他操作同色，指向它时才亮出危险色。 */
 .toolRemove:focus-visible {
-  color: var(--error-color);
+  color: var(--danger-color);
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -222,8 +222,8 @@ $pair-columns: $index-width minmax(0, 1fr) $arrow-width minmax(0, 1fr) $tools-wi
   }
 
   .toolRemove:hover:not(:disabled) {
-    background: var(--destructive-10);
-    color: var(--error-color);
+    background: var(--danger-10);
+    color: var(--danger-color);
   }
 }
 

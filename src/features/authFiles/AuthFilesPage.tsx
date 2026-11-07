@@ -7,7 +7,6 @@ import { useRevealOnScroll } from '@/hooks/motion';
 import { usePageTransitionLayer } from '@/components/common/PageTransitionLayer';
 import { Button } from '@/components/ui/Button';
 import { EmptyState } from '@/components/ui/EmptyState';
-import { Skeleton } from '@/components/ui/Skeleton';
 import { StackedColumns } from '@/components/ui/StackedColumns';
 import { readCardLayout, writeCardLayout, type CardLayout } from '@/components/ui/cardLayout';
 import { copyToClipboard } from '@/utils/clipboard';
@@ -24,6 +23,7 @@ import {
   type ResolvedTheme,
 } from '@/features/authFiles/constants';
 import { AuthFileCard } from '@/features/authFiles/components/AuthFileCard';
+import { AuthFileCardSkeleton } from '@/features/authFiles/components/AuthFileCardSkeleton';
 import { AuthFileDetailsSheet } from '@/features/authFiles/components/AuthFileDetailsSheet';
 import { getAuthFileRefreshKey } from '@/features/authFiles/manualRefresh';
 import { AuthFileRefreshResults } from '@/features/authFiles/components/AuthFileRefreshResults';
@@ -66,9 +66,12 @@ import styles from './AuthFilesPage.module.scss';
 
 const DEFAULT_REGULAR_PAGE_SIZE = 9;
 const DEFAULT_COMPACT_PAGE_SIZE = 12;
-const SKELETON_CARD_COUNT = 6;
-/** 首屏卡片级联入场总预算，与 useRevealGroup 同一 360ms 语汇。 */
-const CARD_ENTRANCE_BUDGET_MS = 360;
+const DEFAULT_SKELETON_CARD_COUNT = 6;
+/**
+ * The card count of the last page shown in this session. The skeleton shows this many
+ * cards when the page opens again, so the grid has the same rows when the data arrives.
+ */
+let lastPageCardCount: number | null = null;
 
 const resolveStatusFilterMode = (
   problemOnly: boolean,
@@ -488,10 +491,9 @@ export function AuthFilesPage() {
   const activeCount = useMemo(() => files.filter((file) => file.disabled !== true).length, [files]);
   const problemCount = useMemo(() => files.filter(isProblemAuthFile).length, [files]);
 
-  /* ---------- 首屏卡片一次性级联入场 ----------
-   * 首批数据渲染后立即翻转 cardsAnimated；已挂载的卡片在挂载时捕获过
-   * 自己的延迟（AuthFileCard 内 useState 初始化），不受后续 null 影响，
-   * 而过滤/翻页/轮询新挂载的卡片拿到 null——不重播。 */
+  /* ---------- 首屏卡片一次性淡入 ----------
+   * The first cards replace the skeleton in place and fade in once, all together.
+   * Cards that mount later (filter, page, poll) do not fade. */
 
   const [cardsAnimated, setCardsAnimated] = useState(false);
   const enableCardEntrance = !cardsAnimated && isCurrentLayer && !loading && pageItems.length > 0;
@@ -500,11 +502,13 @@ export function AuthFilesPage() {
       setCardsAnimated(true);
     }
   }, [enableCardEntrance]);
-  const cardEntranceDelay = (index: number): number | null => {
-    if (!enableCardEntrance) return null;
-    if (pageItems.length <= 1) return 0;
-    return Math.round((index / (pageItems.length - 1)) * CARD_ENTRANCE_BUDGET_MS);
-  };
+  useEffect(() => {
+    if (!loading) lastPageCardCount = pageItems.length;
+  }, [loading, pageItems.length]);
+  const skeletonCardCount = Math.min(
+    pageSize,
+    lastPageCardCount && lastPageCardCount > 0 ? lastPageCardCount : DEFAULT_SKELETON_CARD_COUNT
+  );
 
   /* ---------- 杂项 ---------- */
 
@@ -577,7 +581,7 @@ export function AuthFilesPage() {
   );
   const loadingQuotaSet = useMemo(() => new Set(loadingQuotaKeys.split('\n')), [loadingQuotaKeys]);
 
-  const renderCard = (file: (typeof pageItems)[number], index: number) => (
+  const renderCard = (file: (typeof pageItems)[number]) => (
     <AuthFileCard
       key={getQuotaCacheKey(file)}
       file={file}
@@ -591,7 +595,7 @@ export function AuthFilesPage() {
       cooldownResetting={cooldownResetting}
       quotaFilterType={activeQuotaFilter}
       statusBarCache={statusBarCache}
-      entranceDelayMs={cardEntranceDelay(index)}
+      entrance={enableCardEntrance}
       onShowModels={showModels}
       onDownload={handleDownload}
       onManualRefresh={handleManualRefresh}
@@ -632,7 +636,7 @@ export function AuthFilesPage() {
         onChange={handleFileChange}
       />
 
-      <VaultPulse files={files} statusBarCache={statusBarCache} />
+      <VaultPulse files={files} loading={loading} statusBarCache={statusBarCache} />
 
       <section className={styles.workbench} aria-label={t('auth_files.title_section')}>
         <ProviderTabs
@@ -687,9 +691,14 @@ export function AuthFilesPage() {
         )}
 
         {loading ? (
-          <div className={gridClasses} aria-hidden="true">
-            {Array.from({ length: SKELETON_CARD_COUNT }, (_, index) => (
-              <Skeleton key={index} height={206} rounded={14} />
+          <div className={gridClasses} aria-busy="true">
+            <span className="sr-only">{t('common.loading')}</span>
+            {Array.from({ length: skeletonCardCount }, (_, index) => (
+              <AuthFileCardSkeleton
+                key={index}
+                compact={compactMode}
+                withQuota={Boolean(activeQuotaFilter)}
+              />
             ))}
           </div>
         ) : isFirstRunEmpty ? (
@@ -728,9 +737,9 @@ export function AuthFilesPage() {
             className={layout === 'even' ? gridClasses : undefined}
             minColumnWidth={compactMode && !activeQuotaFilter ? 260 : 340}
             gap={16}
-            items={pageItems.map((file, index) => ({
+            items={pageItems.map((file) => ({
               key: getQuotaCacheKey(file),
-              node: renderCard(file, index),
+              node: renderCard(file),
               settled: !loadingQuotaSet.has(getQuotaCacheKey(file)),
             }))}
           />

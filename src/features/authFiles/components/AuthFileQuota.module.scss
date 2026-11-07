@@ -35,6 +35,7 @@ $quota-font-size: 11.5px;
 }
 
 button.quotaMessageAction {
+  @include touch-target;
   cursor: pointer;
   border: 0;
   background: none;
@@ -183,7 +184,7 @@ button.quotaMessageAction {
 .quotaBarFill {
   height: 100%;
   border-radius: $radius-full;
-  transition: width 360ms var(--ease-out-strong, ease);
+  transition: width 360ms var(--ease-out-strong);
 }
 
 .quotaBarFillHigh {
