@@ -1,3 +1,5 @@
+@use '../../styles/mixins' as *;
+
 .root {
   position: relative;
   display: inline-flex;
@@ -24,12 +26,13 @@
 }
 
 .track {
+  @include touch-target;
   width: 44px;
   height: 24px;
   background: var(--border-color);
   border-radius: $radius-full;
   position: relative;
-  transition: background-color var(--dur-hover, 200ms) var(--ease-out-strong, ease-out);
+  transition: background-color var(--dur-hover) var(--ease-out-strong);
 }
 
 /* 隐藏的原生 checkbox 仍是焦点载体：键盘聚焦时把焦点环画到轨道上。 */
@@ -51,7 +54,7 @@
   background: #fff;
   border-radius: $radius-full;
   box-shadow: $shadow-sm;
-  transition: transform var(--dur-hover, 200ms) var(--ease-out-strong, ease-out);
+  transition: transform var(--dur-hover) var(--ease-out-strong);
 }
 
 .root input:checked + .track {

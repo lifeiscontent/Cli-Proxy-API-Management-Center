@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { PageHeader } from '@/components/ui/PageHeader';
 import { Input } from '@/components/ui/Input';
 import { IconAlertTriangle, IconSearch } from '@/components/ui/icons';
 import { useHeaderRefresh } from '@/hooks/useHeaderRefresh';
@@ -171,9 +172,7 @@ export function PluginsPage() {
 
   return (
     <div className={styles.page}>
-      <header className={styles.header}>
-        <h1 className={styles.title}>{t('plugin_management.title')}</h1>
-      </header>
+      <PageHeader title={t('plugin_management.title')} />
 
       {data || !pluginsEnabled || restartNames.length > 0 ? (
         <div className={styles.summary}>

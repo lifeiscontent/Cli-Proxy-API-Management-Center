@@ -223,16 +223,20 @@ export function ProviderResourceTable({
           return (
             <TableRow key={resource.id} selected={resource.id === selectedId}>
               <TableCell>{renderPrimary(resource)}</TableCell>
-              <TableCell>{renderBaseUrl(resource)}</TableCell>
-              <TableCell>
+              <TableCell data-label={t('providersPage.table.baseUrl')}>
+                {renderBaseUrl(resource)}
+              </TableCell>
+              <TableCell data-label={t('providersPage.table.prefix')}>
                 {resource.prefix ? (
                   <span className={styles.chip}>{resource.prefix}</span>
                 ) : (
                   <span className={styles.baseUrl}>{t('providersPage.status.none')}</span>
                 )}
               </TableCell>
-              <TableCell>{renderModelsSummary(resource)}</TableCell>
-              <TableCell>
+              <TableCell data-label={t('providersPage.table.models')}>
+                {renderModelsSummary(resource)}
+              </TableCell>
+              <TableCell data-label={t('providersPage.table.status')}>
                 <div className={styles.statusCell}>
                   {renderStatus(resource)}
                   {usageByProvider && !isSponsorResource(resource) ? (

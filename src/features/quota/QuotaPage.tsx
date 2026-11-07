@@ -16,7 +16,6 @@ import { CardLayoutSwitch } from '@/components/ui/CardLayoutSwitch';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { IconSearch, IconX } from '@/components/ui/icons';
 import { Select } from '@/components/ui/Select';
-import { Skeleton } from '@/components/ui/Skeleton';
 import { StackedColumns } from '@/components/ui/StackedColumns';
 import { readCardLayout, writeCardLayout, type CardLayout } from '@/components/ui/cardLayout';
 import { useHeaderRefresh } from '@/hooks/useHeaderRefresh';
@@ -28,9 +27,9 @@ import { getQuotaCacheKey } from '@/utils/quota/identity';
 import { ProviderTabs } from '@/features/authFiles/components/ProviderTabs';
 import { QuotaHeader } from './components/QuotaHeader';
 import { QuotaCard } from './components/QuotaCard';
+import { QuotaCardSkeleton } from './components/QuotaCardSkeleton';
 import { QuotaTimeline } from './components/QuotaTimeline';
 import {
-  CARD_ENTRANCE_BUDGET_MS,
   QUOTA_CARD_LAYOUT_KEY,
   QUOTA_COMPACT_COLUMNS,
   QUOTA_PAGE_SIZE,
@@ -335,10 +334,9 @@ export function QuotaPage() {
 
   const canUseActions = !disableControls && !loading && filesGeneration === sessionGeneration;
 
-  /* ---------- 首屏卡片一次性级联入场 ----------
-   * 首批数据渲染后立即翻转 cardsAnimated；已挂载的卡片在挂载时捕获过自己的
-   * 延迟（QuotaCard 内 useState 初始化），后续切 tab/翻页/刷新新挂载的卡片
-   * 拿到 null —— 不重播。 */
+  /* ---------- 首屏卡片一次性淡入 ----------
+   * The first cards replace the skeleton in place and fade in once, all together. Cards
+   * that mount later (tab, page, refresh) get null and do not fade. */
 
   const [cardsAnimated, setCardsAnimated] = useState(false);
   const enableCardEntrance = !cardsAnimated && !loading && pageItems.length > 0;
@@ -347,16 +345,11 @@ export function QuotaPage() {
       setCardsAnimated(true);
     }
   }, [enableCardEntrance]);
-  const cardEntranceDelay = (index: number): number | null => {
-    if (!enableCardEntrance) return null;
-    if (pageItems.length <= 1) return 0;
-    return Math.round((index / (pageItems.length - 1)) * CARD_ENTRANCE_BUDGET_MS);
-  };
 
   /* ---------- 渲染 ---------- */
 
   const cardKey = (entry: QuotaFileEntry) => `${entry.type}:${getQuotaCacheKey(entry.file)}`;
-  const renderCard = (entry: QuotaFileEntry, index: number) => {
+  const renderCard = (entry: QuotaFileEntry) => {
     const key = cardKey(entry);
     return (
       <QuotaCard
@@ -366,7 +359,7 @@ export function QuotaPage() {
         resolvedTheme={resolvedTheme}
         canRefresh={canUseActions && !entry.file.disabled}
         resetting={resettingQuotaName === getQuotaCacheKey(entry.file)}
-        entranceDelayMs={cardEntranceDelay(index)}
+        entranceDelayMs={enableCardEntrance ? 0 : null}
         creditOverageSharedCount={
           entry.type === 'codex'
             ? codexCreditOverageCounts.get(codexCreditOverageKey(entry.file) ?? '')
@@ -453,9 +446,10 @@ export function QuotaPage() {
         )}
 
         {loading ? (
-          <div className={styles.grid} aria-hidden="true">
+          <div className={styles.grid} aria-busy="true">
+            <span className="sr-only">{t('common.loading')}</span>
             {Array.from({ length: SKELETON_CARD_COUNT }, (_, index) => (
-              <Skeleton key={index} height={168} rounded={14} />
+              <QuotaCardSkeleton key={index} />
             ))}
           </div>
         ) : isEmpty ? (
@@ -492,9 +486,9 @@ export function QuotaPage() {
             stacked={layout !== 'even'}
             className={layout === 'even' ? styles.grid : undefined}
             {...(layout === 'compact' ? QUOTA_COMPACT_COLUMNS : QUOTA_STACKED_COLUMNS)}
-            items={pageItems.map((entry, index) => ({
+            items={pageItems.map((entry) => ({
               key: cardKey(entry),
-              node: renderCard(entry, index),
+              node: renderCard(entry),
               settled: getQuota(entry)?.status !== 'loading',
             }))}
           />

@@ -1,12 +1,11 @@
 @use '../../../styles/mixins' as *;
-@use '../../../styles/variables' as *;
 
 .providerTable {
   min-width: 960px;
   table-layout: fixed;
 
   tbody tr:hover .actionsCell {
-    background: color-mix(in srgb, var(--accent-bg) 50%, transparent);
+    background: color-mix(in srgb, var(--bg-tertiary) 50%, transparent);
   }
 }
 
@@ -28,7 +27,7 @@
 
 .primarySub {
   font-size: 12px;
-  color: var(--muted-foreground);
+  color: var(--text-secondary);
   font-family: $font-mono;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -43,7 +42,7 @@
   max-width: 100%;
   font-family: $font-mono;
   font-size: 12px;
-  color: var(--muted-foreground);
+  color: var(--text-secondary);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -53,10 +52,10 @@
   display: inline-flex;
   align-items: center;
   padding: 3px 9px;
-  border-radius: var(--radius-md);
+  border-radius: $radius-md;
   border: 1px solid var(--border-color);
-  background: var(--muted-bg);
-  color: var(--muted-foreground);
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
   font-size: 12px;
 }
 
@@ -72,16 +71,16 @@
   align-items: center;
   gap: 4px;
   padding: 3px 9px;
-  border-radius: var(--radius-md);
+  border-radius: $radius-md;
   border: 1px solid var(--border-color);
-  background: var(--muted-bg);
+  background: var(--bg-tertiary);
   font-size: 12px;
   line-height: 1.4;
   white-space: nowrap;
 }
 
 .metricLabel {
-  color: var(--muted-foreground);
+  color: var(--text-secondary);
 }
 
 .metricValue {
@@ -94,7 +93,7 @@
   display: inline-flex;
   align-items: center;
   padding: 3px 9px;
-  border-radius: var(--radius-md);
+  border-radius: $radius-md;
   border: 1px solid var(--primary-30);
   background: var(--primary-10);
   color: var(--primary-color);
@@ -109,7 +108,7 @@
   align-items: center;
   gap: 4px;
   padding: 3px 9px;
-  border-radius: var(--radius-md);
+  border-radius: $radius-md;
   border: 1px solid;
   font-size: 12px;
   font-weight: 500;
@@ -186,7 +185,7 @@
 
 .actionsHead {
   z-index: 3;
-  background: var(--muted-bg);
+  background: var(--bg-tertiary);
 }
 
 .actionsCell {
@@ -212,7 +211,9 @@
   margin-right: 4px;
 }
 
+// Row buttons sit 4px apart, so each touch area grows only into half the gap.
 .iconBtn {
+  @include touch-target(34px);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -220,7 +221,7 @@
   height: 30px;
   padding: 0;
   border: 1px solid transparent;
-  border-radius: var(--radius-md);
+  border-radius: $radius-md;
   background: transparent;
   color: var(--text-secondary);
   cursor: pointer;
@@ -245,10 +246,73 @@
 }
 
 .iconBtnDanger {
-  color: var(--destructive-color);
+  color: var(--danger-color);
 
   &:hover:not(:disabled) {
-    background: var(--destructive-10);
-    color: var(--destructive-color);
+    background: var(--danger-10);
+    color: var(--danger-color);
+  }
+}
+
+// One stacked block per resource whenever the panel is narrower than the
+// 960px table and its 1px frame. Otherwise the sticky actions hide columns.
+// A container query, because the panel width also depends on the sidebar and
+// on the category list beside it at >= 1280px.
+@container provider-panel (max-width: 961px) {
+  .providerTable {
+    display: block;
+    min-width: 0;
+    table-layout: auto;
+
+    colgroup,
+    thead {
+      display: none;
+    }
+
+    tbody,
+    tr,
+    td {
+      display: block;
+    }
+
+    // Pad the cells, not the row, so hover and selected tints fill the row.
+    tbody tr td {
+      padding: 4px 16px;
+      border-bottom: none;
+      text-align: left;
+    }
+
+    tbody tr td:first-child {
+      padding-top: 12px;
+    }
+
+    tbody tr td:last-child {
+      padding-top: 8px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    tbody tr:last-child td:last-child {
+      border-bottom: none;
+    }
+
+    td[data-label]::before {
+      content: attr(data-label);
+      display: block;
+      margin-bottom: 2px;
+      color: var(--text-secondary);
+      font-size: 12px;
+    }
+  }
+
+  .actionsCell {
+    position: static;
+    width: auto;
+    min-width: 0;
+    box-shadow: none;
+  }
+
+  .actions {
+    justify-content: flex-start;
   }
 }

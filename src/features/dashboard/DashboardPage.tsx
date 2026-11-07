@@ -10,12 +10,14 @@ import {
   IconSidebarSystem,
 } from '@/components/ui/icons';
 import { InfoTip } from '@/components/ui/Tooltip';
+import { Skeleton } from '@/components/ui/Skeleton';
 import { useAuthStore } from '@/stores';
 import { useHeaderRefresh } from '@/hooks/useHeaderRefresh';
 import { formatCompactNumber, formatDateValue, formatPercent } from '@/utils/format';
 import { useDashboardOverview } from './hooks/useDashboardOverview';
 import { LiveWire } from './components/LiveWire';
 import { Meter } from './components/Meter';
+import { CredentialHealthSkeleton, FleetListSkeleton } from './components/DashboardSkeletons';
 import { Sparkline } from './components/Sparkline';
 import { ThroughputChart } from './components/ThroughputChart';
 import { useCountUp, useRevealGroup, useRevealOnScroll } from '@/hooks/motion';
@@ -41,8 +43,17 @@ export function DashboardPage() {
   const serverVersion = useAuthStore((state) => state.serverVersion);
   const serverBuildDate = useAuthStore((state) => state.serverBuildDate);
 
-  const { connectionStatus, connected, config, counts, traffic, providers, credentials, refresh } =
-    useDashboardOverview();
+  const {
+    connectionStatus,
+    connected,
+    config,
+    counts,
+    traffic,
+    providers,
+    credentials,
+    credentialsLoading,
+    refresh,
+  } = useDashboardOverview();
 
   useHeaderRefresh(refresh, connected);
 
@@ -123,6 +134,7 @@ export function DashboardPage() {
       info: null,
       meter: traffic.successRate,
       tone: successRateTone,
+      loading: false,
     },
     {
       key: 'credentials',
@@ -134,6 +146,7 @@ export function DashboardPage() {
           ? (credentials.active / credentials.total) * 100
           : null,
       tone: undefined,
+      loading: credentialsLoading,
     },
     {
       key: 'providerKeys',
@@ -142,6 +155,7 @@ export function DashboardPage() {
       info: t('dashboard.stat_provider_keys_hint'),
       meter: null,
       tone: undefined,
+      loading: false,
     },
     {
       key: 'models',
@@ -150,6 +164,7 @@ export function DashboardPage() {
       info: t('dashboard.stat_models_hint'),
       meter: null,
       tone: undefined,
+      loading: false,
     },
   ];
 
@@ -317,7 +332,13 @@ export function DashboardPage() {
               <span className={styles.statLabel}>{tile.label}</span>
               {tile.info && <InfoTip content={tile.info} label={tile.label} />}
             </div>
-            <strong className={styles.statValue}>{tile.value}</strong>
+            <strong className={styles.statValue}>
+              {tile.loading ? <Skeleton text width="2ch" /> : tile.value}
+            </strong>
+            {tile.loading ? (
+              // Most instances have credentials, so the meter usually follows.
+              <Skeleton className={styles.statMeterSkeleton} rounded={999} aria-hidden="true" />
+            ) : null}
             {tile.meter !== null && tile.meter !== undefined && (
               <Meter
                 value={tile.meter}
@@ -348,7 +369,9 @@ export function DashboardPage() {
           <h2 className={styles.sectionTitle}>{t('dashboard.fleet_title')}</h2>
         </header>
         <div className={styles.panel}>
-          {providers.length === 0 ? (
+          {providers.length === 0 && credentialsLoading ? (
+            <FleetListSkeleton />
+          ) : providers.length === 0 ? (
             <p className={styles.emptyNote}>{t('dashboard.fleet_empty')}</p>
           ) : (
             <ul className={styles.fleetList}>
@@ -400,7 +423,9 @@ export function DashboardPage() {
             <span className={styles.eyebrow}>{t('dashboard.health_eyebrow')}</span>
             <h2 className={styles.panelTitle}>{t('dashboard.health_title')}</h2>
           </header>
-          {!credentials || credentials.total === 0 ? (
+          {credentialsLoading ? (
+            <CredentialHealthSkeleton />
+          ) : !credentials || credentials.total === 0 ? (
             <p className={styles.emptyNote}>{t('dashboard.health_empty')}</p>
           ) : (
             <>

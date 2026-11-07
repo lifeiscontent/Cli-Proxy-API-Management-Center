@@ -5,15 +5,10 @@ import { Select } from '@/components/ui/Select';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { CardLayoutSwitch } from '@/components/ui/CardLayoutSwitch';
 import type { CardLayout } from '@/components/ui/cardLayout';
+import { keepInViewport } from '@/components/ui/keepInViewport';
 import { IconSearch, IconSlidersHorizontal, IconTrash2 } from '@/components/ui/icons';
-import {
-  MAX_CARD_PAGE_SIZE,
-  MIN_CARD_PAGE_SIZE,
-} from '@/features/authFiles/constants';
-import type {
-  AuthFilesSortMode,
-  AuthFilesStatusFilterMode,
-} from '@/features/authFiles/uiState';
+import { MAX_CARD_PAGE_SIZE, MIN_CARD_PAGE_SIZE } from '@/features/authFiles/constants';
+import type { AuthFilesSortMode, AuthFilesStatusFilterMode } from '@/features/authFiles/uiState';
 import styles from './AuthFilesToolbar.module.scss';
 
 export type AuthFilesToolbarProps = {
@@ -139,14 +134,14 @@ export function AuthFilesToolbar(props: AuthFilesToolbarProps) {
           aria-expanded={displaySettingsOpen}
           aria-controls="auth-files-display-settings"
           title={t('auth_files.display_options_label')}
-        onClick={() => setDisplaySettingsOpen((open) => !open)}
+          onClick={() => setDisplaySettingsOpen((open) => !open)}
         >
           <IconSlidersHorizontal size={15} />
           <span>{t('auth_files.display_options_label')}</span>
         </button>
 
         {displaySettingsOpen && (
-          <div id="auth-files-display-settings" className={styles.popover}>
+          <div id="auth-files-display-settings" className={styles.popover} ref={keepInViewport}>
             <div className={styles.popoverRow}>
               <label htmlFor="auth-files-page-size">{t('auth_files.page_size_label')}</label>
               <input

@@ -15,6 +15,7 @@ import {
   getTypeLabel,
   isThemeSurfaceIconProvider,
 } from '@/features/authFiles/constants';
+import { deriveAuthFileIdentity } from '@/features/authFiles/identity';
 import { bindQuotaClasses } from '../types';
 import { QUOTA_ADAPTERS, type QuotaCardState } from '../providers';
 import { isQuotaRefreshDisabled, type QuotaFileEntry } from '../logic';
@@ -70,7 +71,10 @@ export function QuotaCard(props: QuotaCardProps) {
   const file = entry.file;
   const retainedClaudeUsage =
     entry.type === 'claude' && hasClaudeUsageData(quota as ClaudeQuotaState | undefined);
-  const displayName = getQuotaDisplayName(file);
+  // Lead with the account (it identifies the credential); the file name is secondary.
+  const identity = deriveAuthFileIdentity(file);
+  const title = identity.kind === 'fileName' ? getQuotaDisplayName(file) : identity.primary;
+  const subtitle = identity.kind === 'fileName' ? null : identity.secondary;
 
   // Capture the entrance delay only at mount, without a render-time ref read.
   const [mountEntranceDelayMs] = useState<number | null>(entranceDelayMs ?? null);
@@ -129,7 +133,7 @@ export function QuotaCard(props: QuotaCardProps) {
       entry={creditOverage.entry}
       classes={quotaClasses}
       disabled={creditOverage.blocked}
-      name={displayName}
+      name={title}
       onManage={creditOverage.openDialog}
     />
   ) : undefined;
@@ -163,8 +167,15 @@ export function QuotaCard(props: QuotaCardProps) {
             <span className={styles.iconFallback}>{typeLabel.slice(0, 1).toUpperCase()}</span>
           )}
         </span>
-        <span className={styles.fileName} title={displayName}>
-          {displayName}
+        <span className={styles.titles}>
+          <span className={styles.account} title={title}>
+            {title}
+          </span>
+          {subtitle && (
+            <span className={styles.fileName} title={file.name}>
+              {subtitle}
+            </span>
+          )}
         </span>
         {glance !== undefined && (
           <button
@@ -172,7 +183,7 @@ export function QuotaCard(props: QuotaCardProps) {
             className={styles.glanceToggle}
             onClick={onToggleGlance}
             aria-expanded={!glance}
-            aria-label={`${t(glance ? 'card_layout.show_details' : 'card_layout.hide_details')}: ${displayName}`}
+            aria-label={`${t(glance ? 'card_layout.show_details' : 'card_layout.hide_details')}: ${title}`}
             title={t(glance ? 'card_layout.show_details' : 'card_layout.hide_details')}
           >
             <IconChevronDown size={14} />
@@ -184,12 +195,12 @@ export function QuotaCard(props: QuotaCardProps) {
         {status === 'idle' ? (
           <button
             type="button"
-            className={styles.idleBody}
+            className={`${styles.actionPill} ${styles.idleAction}`}
             onClick={onRefresh}
             disabled={!canRefresh}
           >
-            <IconRefreshCw size={15} aria-hidden="true" className={styles.idleGlyph} />
-            <span className={styles.idleHint}>{t(`${adapter.i18nPrefix}.idle`)}</span>
+            <IconRefreshCw size={13} aria-hidden="true" />
+            {t(`${adapter.i18nPrefix}.idle`)}
           </button>
         ) : loading && !retainedClaudeUsage ? (
           <div className={styles.skeleton} aria-busy="true">
@@ -280,7 +291,7 @@ export function QuotaCard(props: QuotaCardProps) {
           loading={claudeReset.loading}
           pendingGrantId={claudeReset.pendingGrantId}
           message={claudeReset.message}
-          name={displayName}
+          name={title}
           onConfirm={() => void claudeReset.confirm()}
           onClose={claudeReset.closeDialog}
         />

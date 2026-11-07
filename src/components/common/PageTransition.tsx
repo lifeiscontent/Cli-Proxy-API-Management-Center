@@ -7,6 +7,7 @@ import {
   PageTransitionLayerContext,
   type LayerStatus,
 } from './PageTransitionLayer';
+import { prefersReducedMotion } from '@/hooks/motion';
 import './PageTransition.scss';
 
 interface PageTransitionProps {
@@ -16,11 +17,12 @@ interface PageTransitionProps {
   scrollContainerRef?: React.RefObject<HTMLElement | null>;
 }
 
-// Premium personality: enter > exit, decelerate-in / accelerate-out.
-const VERTICAL_ENTER_DURATION = 0.36;
-const VERTICAL_EXIT_DURATION = 0.22;
-const VERTICAL_ENTER_DISTANCE = 28;
-const VERTICAL_EXIT_DISTANCE = 12;
+// The old page fades out first and the new page enters after it. The two layers
+// never show together, because two different layouts cross-fading reads as jank.
+const VERTICAL_ENTER_DURATION = 0.24;
+const VERTICAL_EXIT_DURATION = 0.12;
+const VERTICAL_ENTER_DISTANCE = 8;
+const VERTICAL_EXIT_DISTANCE = 0;
 const REDUCED_MOTION_DURATION = 0.15;
 
 const IOS_TRANSITION_DURATION = 0.44;
@@ -38,9 +40,6 @@ const easeOutQuart = (progress: number) => 1 - (1 - progress) ** 4;
 const easeInQuad = (progress: number) => progress * progress;
 // easeOutCubic: smooth Apple-style settle for iOS push/pop.
 const easeOutCubic = (progress: number) => 1 - (1 - progress) ** 3;
-
-const prefersReducedMotion = () =>
-  typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 
 const buildVerticalTransform = (y: number) => `translate3d(0px, ${y}px, 0px)`;
 const buildIosTransform = (xPercent: number, y: number, scale = 1) =>
@@ -351,7 +350,7 @@ export function PageTransition({
         )
       );
     } else {
-      // Vertical: split timing — exit leaves quickly (accelerate), enter settles slowly (decelerate).
+      // Vertical: the exit finishes before the enter starts (see VERTICAL_* above).
       if (exitingLayerEl) {
         exitingLayerEl.style.transform = buildVerticalTransform(exitBaseY);
         activeAnimations.push(
@@ -383,6 +382,7 @@ export function PageTransition({
           },
           {
             duration: VERTICAL_ENTER_DURATION,
+            delay: exitingLayerEl ? VERTICAL_EXIT_DURATION : 0,
             ease: easeOutQuart,
           }
         )

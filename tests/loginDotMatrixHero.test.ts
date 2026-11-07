@@ -207,7 +207,9 @@ describe('login dot-matrix on mobile', () => {
 
   test('the hero picks the top-right origin on mobile widths', async () => {
     const source = await Bun.file('src/pages/login/DotMatrixHero.tsx').text();
-    expect(source).toContain("const COMPACT_QUERY = '(max-width: 768px)'");
+    const mediaQuery = await Bun.file('src/hooks/useMediaQuery.ts').text();
+    expect(mediaQuery).toContain("export const MOBILE_MEDIA_QUERY = '(max-width: 768px)'");
+    expect(source).toContain('window.matchMedia(MOBILE_MEDIA_QUERY)');
     expect(source).toContain("origin: compact ? 'top-right' : 'bottom-right'");
   });
 

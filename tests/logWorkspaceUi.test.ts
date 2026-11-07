@@ -30,7 +30,9 @@ describe('log workspace layout contract', () => {
     expect(archive).toContain('min-height: 0');
     expect(archive).not.toMatch(/\bheight:\s*\d+px/);
     expect(fullscreen).toContain('height: 100dvh');
-    expect(styles).not.toMatch(/\.pageHeader\s*\{\s*display: none/);
+    // The page header stays rendered: fullscreen covers it instead of removing it.
+    expect(page).toContain("<PageHeader title={t('logs.title')}>");
+    expect(page).not.toMatch(/&&\s*\(?\s*<PageHeader/);
     expect(page).toContain('className={styles.errorCard}');
   });
 
@@ -49,7 +51,6 @@ describe('log workspace layout contract', () => {
   test('row actions do not wrap into an empty line or remove keyboard access', () => {
     const copy = styles.match(/^\.copyButton:global\(\.btn\) \{([^}]+)\}/m)?.[1] ?? '';
     expect(copy).toContain('position: sticky');
-    expect(page).toContain("useLocalStorage('logsPage.wrapLogs', false)");
     expect(styles).toContain('width: max-content');
     expect(styles).toContain('flex-wrap: nowrap');
     expect(styles).toContain('.logRow:focus-within .copyButton');
@@ -57,6 +58,13 @@ describe('log workspace layout contract', () => {
     expect(page).toContain('tabIndex={0}');
     expect(page).toContain("aria-label={t('logs.log_content')}");
     expect(page).toContain('aria-pressed={autoRefresh}');
+  });
+
+  test('rows wrap by default below 1280px, where unwrapped rows clip the message', () => {
+    expect(page).toContain("const WRAP_BY_DEFAULT_QUERY = '(max-width: 1279px)';");
+    expect(page).toMatch(
+      /useLocalStorage\(\s*'logsPage\.wrapLogs',\s*\(\) =>[^;]*matchMedia\(WRAP_BY_DEFAULT_QUERY\)\.matches/
+    );
   });
 
   test('background refresh retains loaded content and compact status stays outside viewer', () => {
@@ -76,14 +84,12 @@ describe('log workspace layout contract', () => {
     expect(page).toContain("t('logs.cursor_reset_notice')");
   });
 
-  test('toolbar controls share one sizing rule rather than mixing small variants', () => {
+  test('toolbar controls share the app control height rather than mixing small variants', () => {
     expect(page).toContain('className={styles.levelSelect}');
     expect(styles).toMatch(
-      /\.searchInput:global\(\.input\),\s*\.levelSelect > button,\s*\.filterPanelToggle:global\(\.btn\),\s*\.actionButton:global\(\.btn\) \{[^}]*height: var\(--log-control-height\)/
+      /\.searchInput:global\(\.input\),\s*\.levelSelect > button,\s*\.filterPanelToggle:global\(\.btn\),\s*\.actionButton:global\(\.btn\) \{[^}]*height: var\(--control-height\)/
     );
-    expect(styles).toContain('--log-control-height: 40px');
-    expect(styles).toContain('--log-control-height: 36px');
-    expect(styles).toContain('width: var(--log-control-height)');
+    expect(styles).toContain('width: var(--control-height)');
     expect(styles).not.toContain('height: 32px');
   });
 

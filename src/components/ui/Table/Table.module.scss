@@ -1,9 +1,6 @@
-@use '../../../styles/mixins' as *;
-@use '../../../styles/variables' as *;
-
 .wrap {
   border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
+  border-radius: $radius-md;
   overflow: hidden;
   background: var(--bg-primary);
 }
@@ -21,10 +18,10 @@
 }
 
 .head {
-  background: var(--muted-bg);
+  background: var(--bg-tertiary);
 
   th {
-    color: var(--muted-foreground);
+    color: var(--text-secondary);
     font-weight: 500;
     font-size: 12px;
     text-align: left;
@@ -53,7 +50,7 @@
   }
 
   &:hover td {
-    background: color-mix(in srgb, var(--accent-bg) 50%, transparent);
+    background: color-mix(in srgb, var(--bg-tertiary) 50%, transparent);
   }
 
   &.selected td {

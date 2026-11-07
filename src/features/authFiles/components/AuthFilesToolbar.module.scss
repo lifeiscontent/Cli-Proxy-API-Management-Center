@@ -22,7 +22,6 @@
   }
 
   :global(.input) {
-    height: 36px;
     border-radius: 10px;
     font-size: 13px;
     /* 为右侧搜索图标留出空间，避免与占位符/输入文字重叠 */
@@ -39,7 +38,8 @@
 
 .segmented {
   display: inline-flex;
-  align-items: center;
+  align-items: stretch;
+  height: var(--control-height);
   gap: 2px;
   padding: 2px;
   border-radius: $radius-full;
@@ -51,7 +51,7 @@
   border: 0;
   background: none;
   cursor: pointer;
-  padding: 5px 12px;
+  padding: 0 12px;
   border-radius: $radius-full;
   font-size: 12px;
   font-weight: 550;
@@ -59,10 +59,10 @@
   color: var(--text-secondary);
   white-space: nowrap;
   transition:
-    color var(--dur-hover, 200ms) var(--ease-out-strong, ease-out),
-    background-color var(--dur-hover, 200ms) var(--ease-out-strong, ease-out),
-    box-shadow var(--dur-hover, 200ms) var(--ease-out-strong, ease-out),
-    transform var(--dur-press, 160ms) var(--ease-out-strong, ease-out);
+    color var(--dur-hover) var(--ease-out-strong),
+    background-color var(--dur-hover) var(--ease-out-strong),
+    box-shadow var(--dur-hover) var(--ease-out-strong),
+    transform var(--dur-press) var(--ease-out-strong);
 
   &:active {
     transform: scale(0.96);
@@ -83,7 +83,7 @@
 .segmentActive {
   color: var(--text-primary);
   font-weight: 650;
-  background: var(--floating-surface, var(--bg-primary));
+  background: var(--floating-surface);
   box-shadow:
     0 1px 3px rgba(0, 0, 0, 0.12),
     0 1px 2px rgba(0, 0, 0, 0.08);
@@ -91,11 +91,7 @@
 
 .segmentProblem.segmentActive {
   color: var(--danger-color);
-  background: color-mix(
-    in srgb,
-    var(--danger-color) 12%,
-    var(--floating-surface, var(--bg-primary))
-  );
+  background: color-mix(in srgb, var(--danger-color) 12%, var(--floating-surface));
   box-shadow:
     0 1px 3px color-mix(in srgb, var(--danger-color) 20%, transparent),
     0 1px 2px rgba(0, 0, 0, 0.06);
@@ -117,7 +113,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  height: 32px;
+  height: var(--control-height);
   padding: 0 12px;
   border-radius: $radius-full;
   border: 1px solid var(--border-color);
@@ -128,9 +124,9 @@
   color: var(--text-secondary);
   white-space: nowrap;
   transition:
-    color var(--dur-hover, 200ms) var(--ease-out-strong, ease-out),
-    border-color var(--dur-hover, 200ms) var(--ease-out-strong, ease-out),
-    transform var(--dur-press, 160ms) var(--ease-out-strong, ease-out);
+    color var(--dur-hover) var(--ease-out-strong),
+    border-color var(--dur-hover) var(--ease-out-strong),
+    transform var(--dur-press) var(--ease-out-strong);
 
   &:active {
     transform: scale(0.96);
@@ -170,7 +166,7 @@
   background: var(--floating-surface);
   box-shadow: var(--floating-shadow);
   transform-origin: top right;
-  animation: toolbar-popover-in var(--dur-hover, 200ms) var(--ease-out-strong, ease-out) both;
+  animation: toolbar-popover-in var(--dur-hover) var(--ease-out-strong) both;
 }
 
 @keyframes toolbar-popover-in {
@@ -220,7 +216,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  height: 32px;
+  height: var(--control-height);
   padding: 0 12px;
   border-radius: $radius-full;
   border: 1px solid transparent;
@@ -231,9 +227,9 @@
   color: var(--danger-color);
   white-space: nowrap;
   transition:
-    background-color var(--dur-hover, 200ms) var(--ease-out-strong, ease-out),
-    border-color var(--dur-hover, 200ms) var(--ease-out-strong, ease-out),
-    transform var(--dur-press, 160ms) var(--ease-out-strong, ease-out);
+    background-color var(--dur-hover) var(--ease-out-strong),
+    border-color var(--dur-hover) var(--ease-out-strong),
+    transform var(--dur-press) var(--ease-out-strong);
 
   &:disabled {
     cursor: not-allowed;
@@ -252,8 +248,8 @@
 
 @media (hover: hover) and (pointer: fine) {
   .deleteAction:hover:not(:disabled) {
-    background: var(--destructive-10);
-    border-color: var(--destructive-30);
+    background: var(--danger-10);
+    border-color: var(--danger-30);
   }
 }
 

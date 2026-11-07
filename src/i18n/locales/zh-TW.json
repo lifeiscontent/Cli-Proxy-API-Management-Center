@@ -112,7 +112,7 @@
     "plugins": "插件",
     "config_management": "設定面板",
     "logs": "記錄檢視",
-    "system_info": "中心資訊"
+    "system_info": "關於"
   },
   "nav_groups": {
     "operate": "運行",
@@ -1682,7 +1682,7 @@
     "empty_title": "尚無可調度的上游",
     "empty_desc": "請先在 AI 提供商或認證檔案中新增 API Key 或 OAuth 憑證。",
     "entry": "請求進入",
-    "model_placeholder": "所有模型（輸入模型名稱預覽路由）",
+    "model_placeholder": "預覽模型的路由",
     "models_loading": "正在讀取模型 {{done}}/{{total}}",
     "tier_primary": "首選",
     "tier_backup": "備用 {{index}}",
@@ -1980,13 +1980,13 @@
   },
   "language": {
     "switch": "語言",
-    "chinese": "簡體中文",
+    "chinese": "简体中文",
     "chinese_tw": "繁體中文（台灣）",
-    "english": "英文",
-    "russian": "俄文",
+    "english": "English",
+    "russian": "Русский",
     "vietnamese": "Tiếng Việt",
     "korean": "한국어",
-    "turkish": "土耳其文"
+    "turkish": "Türkçe"
   },
   "theme": {
     "switch": "主題",

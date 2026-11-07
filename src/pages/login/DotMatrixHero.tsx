@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { prefersReducedMotion } from '@/hooks/motion';
+import { MOBILE_MEDIA_QUERY } from '@/hooks/useMediaQuery';
 import {
   TONE_DIM,
   TONE_MID,
@@ -14,7 +15,6 @@ import styles from './DotMatrixHero.module.scss';
 export const FALLBACK_DOT_COLOR = '#e2e8f0';
 
 /** 与 $breakpoint-mobile 一致：移动端点阵为页面顶部的横幅 */
-const COMPACT_QUERY = '(max-width: 768px)';
 
 const readDotColor = (element: Element) =>
   getComputedStyle(element).getPropertyValue('--login-dot-color').trim() || FALLBACK_DOT_COLOR;
@@ -132,7 +132,7 @@ export function DotMatrixHero() {
       canvas.height = Math.round(rect.height * dpr);
       context.setTransform(dpr, 0, 0, dpr, 0, 0);
       const compact =
-        typeof window.matchMedia === 'function' && window.matchMedia(COMPACT_QUERY).matches;
+        typeof window.matchMedia === 'function' && window.matchMedia(MOBILE_MEDIA_QUERY).matches;
       grid = createDotGrid(rect.width, rect.height, {
         origin: compact ? 'top-right' : 'bottom-right',
       });

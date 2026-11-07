@@ -4,7 +4,8 @@
 
 .segmented {
   display: inline-flex;
-  align-items: center;
+  align-items: stretch;
+  height: var(--control-height);
   gap: 2px;
   padding: 2px;
   border-radius: $radius-full;
@@ -14,10 +15,11 @@
 }
 
 .segment {
+  @include touch-target;
   border: 0;
   background: none;
   cursor: pointer;
-  padding: 5px 12px;
+  padding: 0 12px;
   border-radius: $radius-full;
   font-size: 12px;
   font-weight: 550;
@@ -25,10 +27,10 @@
   color: var(--text-secondary);
   white-space: nowrap;
   transition:
-    color var(--dur-hover, 200ms) var(--ease-out-strong, ease-out),
-    background-color var(--dur-hover, 200ms) var(--ease-out-strong, ease-out),
-    box-shadow var(--dur-hover, 200ms) var(--ease-out-strong, ease-out),
-    transform var(--dur-press, 160ms) var(--ease-out-strong, ease-out);
+    color var(--dur-hover) var(--ease-out-strong),
+    background-color var(--dur-hover) var(--ease-out-strong),
+    box-shadow var(--dur-hover) var(--ease-out-strong),
+    transform var(--dur-press) var(--ease-out-strong);
 
   &:disabled {
     cursor: not-allowed;
@@ -54,7 +56,7 @@
 .segmentActive {
   color: var(--text-primary);
   font-weight: 650;
-  background: var(--floating-surface, var(--bg-primary));
+  background: var(--floating-surface);
   box-shadow:
     0 1px 3px rgba(0, 0, 0, 0.12),
     0 1px 2px rgba(0, 0, 0, 0.08);

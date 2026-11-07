@@ -112,7 +112,7 @@
     "plugins": "Plugin",
     "config_management": "Bảng cấu hình",
     "logs": "Trình xem Log",
-    "system_info": "Thông tin Trung tâm Quản lý"
+    "system_info": "Giới thiệu"
   },
   "nav_groups": {
     "operate": "Vận hành",
@@ -1617,7 +1617,7 @@
     "empty_title": "Chưa có gì để định tuyến",
     "empty_desc": "Hãy thêm API key hoặc thông tin xác thực OAuth trong Nhà cung cấp AI hoặc Tệp xác thực trước.",
     "entry": "Yêu cầu vào",
-    "model_placeholder": "Tất cả mô hình (nhập tên mô hình để xem trước tuyến)",
+    "model_placeholder": "Xem trước tuyến của mô hình",
     "models_loading": "Đang tải mô hình {{done}}/{{total}}",
     "tier_primary": "Ưu tiên",
     "tier_backup": "Dự phòng {{index}}",
@@ -1915,13 +1915,13 @@
   },
   "language": {
     "switch": "Ngôn ngữ",
-    "chinese": "中文",
+    "chinese": "简体中文",
     "chinese_tw": "繁體中文（台灣）",
     "english": "English",
     "russian": "Русский",
     "vietnamese": "Tiếng Việt",
     "korean": "한국어",
-    "turkish": "Tiếng Thổ Nhĩ Kỳ"
+    "turkish": "Türkçe"
   },
   "theme": {
     "switch": "Giao diện",

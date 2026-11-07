@@ -135,10 +135,7 @@ describe('logs page', () => {
 describe('plugins page and install flow', () => {
   test('the page header is the title alone; warnings stay', () => {
     const page = read('src/features/plugins/PluginsPage.tsx');
-    // Only the h1 in the header.
-    expect(page).toMatch(
-      /<header className=\{styles\.header\}>\s*<h1[^>]*>[^<]*<\/h1>\s*<\/header>/
-    );
+    expect(page).toContain("<PageHeader title={t('plugin_management.title')} />");
     expect(page).toContain("t('plugin_management.global_disabled_hint')");
     expect(read('src/features/plugins/components/PluginStoreView.tsx')).toContain(
       "t('plugin_store.security_banner_text')"
