@@ -60,11 +60,9 @@ describe('log workspace layout contract', () => {
     expect(page).toContain('aria-pressed={autoRefresh}');
   });
 
-  test('rows wrap by default below 1280px, where unwrapped rows clip the message', () => {
-    expect(page).toContain("const WRAP_BY_DEFAULT_QUERY = '(max-width: 1279px)';");
-    expect(page).toMatch(
-      /useLocalStorage\(\s*'logsPage\.wrapLogs',\s*\(\) =>[^;]*matchMedia\(WRAP_BY_DEFAULT_QUERY\)\.matches/
-    );
+  test('line wrapping is a stored preference that defaults to off on every device', () => {
+    expect(page).toContain("useLocalStorage('logsPage.wrapLogs', false)");
+    expect(page).not.toContain('matchMedia');
   });
 
   test('background refresh retains loaded content and compact status stays outside viewer', () => {

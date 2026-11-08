@@ -273,6 +273,7 @@
   overscroll-behavior: contain;
   scrollbar-gutter: stable;
   background: var(--bg-primary);
+  container: log-panel / inline-size;
 }
 
 .statusBar {
@@ -664,5 +665,32 @@
   }
   .filters {
     padding-block: 4px;
+  }
+}
+
+// An unwrapped row is about 940px wide. In a narrower panel, show only the time
+// and move the secondary fields after the path and message, so status, method,
+// path and message come first. Nothing is hidden: the line still scrolls sideways.
+@container log-panel (max-width: 939px) {
+  .logRow {
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .date {
+    display: none;
+  }
+
+  .requestIdBadge {
+    order: 1;
+  }
+
+  .source,
+  .pill {
+    order: 2;
+  }
+
+  .copyButton:global(.btn) {
+    order: 3;
   }
 }

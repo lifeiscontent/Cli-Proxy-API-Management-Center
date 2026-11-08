@@ -30,6 +30,7 @@ import { useAuthStore, useConfigStore, useNotificationStore } from '@/stores';
 import { logsApi, responseDataToText, type ErrorLogFile } from '@/services/api/logs';
 import { INITIAL_VISIBLE_LINES } from './model/logBuffer';
 import { useLogStream } from './hooks/useLogStream';
+import { LogTimestamp } from './components/LogTimestamp';
 import {
   ErrorLogContentSkeleton,
   ErrorLogListSkeleton,
@@ -58,9 +59,6 @@ const INITIAL_DISPLAY_LINES = INITIAL_VISIBLE_LINES;
 
 type TabType = 'logs' | 'errors';
 
-// An unwrapped request row is about 940px wide. Below 1280px the log panel is
-// narrower, so the row end (often the request path) is clipped. Wrap by default there.
-const WRAP_BY_DEFAULT_QUERY = '(max-width: 1279px)';
 
 export function LogsPage() {
   const { t } = useTranslation();
@@ -79,11 +77,7 @@ export function LogsPage() {
     true
   );
   const [showRawLogs, setShowRawLogs] = useLocalStorage('logsPage.showRawLogs', false);
-  const [wrapLogs, setWrapLogs] = useLocalStorage(
-    'logsPage.wrapLogs',
-    () =>
-      typeof window.matchMedia === 'function' && window.matchMedia(WRAP_BY_DEFAULT_QUERY).matches
-  );
+  const [wrapLogs, setWrapLogs] = useLocalStorage('logsPage.wrapLogs', false);
   const [structuredFiltersExpanded, setStructuredFiltersExpanded] = useState(false);
   const [errorLogs, setErrorLogs] = useState<ErrorLogFile[]>([]);
   const [loadingErrors, setLoadingErrors] = useState(false);
@@ -834,7 +828,9 @@ export function LogsPage() {
                               defaultValue: 'Double-click to copy',
                             })}
                           >
-                            <div className={styles.timestamp}>{line.timestamp || ''}</div>
+                            <div className={styles.timestamp} title={line.timestamp}>
+                              <LogTimestamp value={line.timestamp || ''} />
+                            </div>
                             <div className={styles.rowMain}>
                               {line.level && (
                                 <span
