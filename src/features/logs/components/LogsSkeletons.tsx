@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Skeleton } from '@/components/ui/Skeleton';
+import { LogTimestamp } from './LogTimestamp';
 import styles from '../LogsPage.module.scss';
 
 const LOG_ROW_COUNT = 24;
@@ -21,7 +22,9 @@ export function LogPanelSkeleton({ wrapped }: { wrapped: boolean }) {
         {Array.from({ length: LOG_ROW_COUNT }, (_, index) => (
           <div key={index} className={styles.logRow}>
             <div className={styles.timestamp}>
-              <Skeleton text>2026-01-01 00:00:00</Skeleton>
+              <Skeleton text>
+                <LogTimestamp value="2026-01-01 00:00:00" />
+              </Skeleton>
             </div>
             <div className={`${styles.rowMain} ${styles.rowMainSkeleton}`}>
               <span className={styles.badge}>
