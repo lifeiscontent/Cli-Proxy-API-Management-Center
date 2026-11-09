@@ -1994,7 +1994,9 @@
     "categories": {
       "title": "Provider",
       "quickFill": "Điền nhanh",
-      "activeCount": "{{active}}/{{total}} đang hoạt động"
+      "activeCount": "{{active}}/{{total}} đang hoạt động",
+      "addProvider": "Thêm nhà cung cấp",
+      "noConfigured": "Chưa có nhà cung cấp được cấu hình. Chọn Thêm nhà cung cấp để kết nối."
     },
     "providerNames": {
        "aiCodeMirror": "AIcodemirror",

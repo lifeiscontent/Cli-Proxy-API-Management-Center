@@ -185,3 +185,21 @@
   border-color: color-mix(in srgb, #1783ff 48%, var(--border-color));
   color: color-mix(in srgb, #1783ff 82%, var(--text-primary));
 }
+
+.addProvider {
+  width: 100%;
+  min-height: 48px;
+  margin-top: 8px;
+  padding: 8px 16px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  cursor: pointer;
+  text-align: left;
+
+  &:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+  }
+}

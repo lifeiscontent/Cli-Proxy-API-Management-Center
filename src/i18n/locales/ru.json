@@ -2126,7 +2126,9 @@
     "categories": {
       "title": "Провайдеры",
       "quickFill": "Быстрое заполнение",
-      "activeCount": "{{active}}/{{total}} активных"
+      "activeCount": "{{active}}/{{total}} активных",
+      "addProvider": "Добавить провайдера",
+      "noConfigured": "Нет настроенных провайдеров. Выберите «Добавить провайдера»."
     },
     "providerNames": {
        "aiCodeMirror": "AIcodemirror",

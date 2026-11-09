@@ -2122,7 +2122,9 @@
     "categories": {
       "title": "Sağlayıcılar",
       "quickFill": "Hızlı Doldur",
-      "activeCount": "{{active}} / {{total}} Aktif"
+      "activeCount": "{{active}} / {{total}} Aktif",
+      "addProvider": "Sağlayıcı ekle",
+      "noConfigured": "Yapılandırılmış sağlayıcı yok. Bağlanmak için Sağlayıcı ekle seçeneğini kullanın."
     },
     "providerNames": {
        "aiCodeMirror": "AIcodemirror",

@@ -2122,7 +2122,9 @@
     "categories": {
       "title": "Providers",
       "quickFill": "Quick Fill",
-      "activeCount": "{{active}}/{{total}} active"
+      "activeCount": "{{active}}/{{total}} active",
+      "addProvider": "Add provider",
+      "noConfigured": "No configured providers. Choose Add provider to connect one."
     },
     "providerNames": {
        "aiCodeMirror": "AIcodemirror",

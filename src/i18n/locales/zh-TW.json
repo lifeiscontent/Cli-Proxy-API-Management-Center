@@ -2144,7 +2144,9 @@
     "categories": {
       "title": "提供商",
       "quickFill": "快速接入",
-      "activeCount": "{{active}}/{{total}} 活躍"
+      "activeCount": "{{active}}/{{total}} 活躍",
+      "addProvider": "新增供應商",
+      "noConfigured": "尚未設定供應商。選擇「新增供應商」以連接。"
     },
     "providerNames": {
        "aiCodeMirror": "AIcodemirror",

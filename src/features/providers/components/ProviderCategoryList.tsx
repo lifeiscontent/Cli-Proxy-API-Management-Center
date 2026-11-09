@@ -7,22 +7,28 @@ interface ProviderCategoryListProps {
   groups: ProviderGroup[];
   activeBrand: ProviderBrand;
   onSelect: (brand: ProviderBrand) => void;
+  onAdd?: (brand: ProviderBrand) => void;
+  showAvailable?: boolean;
+  onShowAvailable?: (open: boolean) => void;
 }
 
-const QUICK_FILL_BRAND_ORDER: readonly ProviderBrand[] = ['fennoAI', 'qiniuCloud', 'aiCodeMirror'];
-
-const QUICK_FILL_BRANDS: ReadonlySet<ProviderBrand> = new Set(QUICK_FILL_BRAND_ORDER);
-
-export function ProviderCategoryList({ groups, activeBrand, onSelect }: ProviderCategoryListProps) {
-  const { t } = useTranslation();
-
-  const quickFillGroups = groups
-    .filter((g) => QUICK_FILL_BRANDS.has(g.id))
-    .sort(
-      (left, right) =>
-        QUICK_FILL_BRAND_ORDER.indexOf(left.id) - QUICK_FILL_BRAND_ORDER.indexOf(right.id)
-    );
-  const providerGroups = groups.filter((g) => !QUICK_FILL_BRANDS.has(g.id));
+export function ProviderCategoryList({
+  groups,
+  activeBrand,
+  onSelect,
+  onAdd,
+  showAvailable = false,
+  onShowAvailable,
+}: ProviderCategoryListProps) {
+  const { t, i18n } = useTranslation();
+  const ordered = [...groups].sort((a, b) =>
+    t(`providersPage.providerNames.${a.id}`).localeCompare(
+      t(`providersPage.providerNames.${b.id}`),
+      i18n.language
+    )
+  );
+  const configured = ordered.filter((group) => group.resources.length > 0);
+  const available = ordered.filter((group) => group.resources.length === 0);
 
   const renderGroups = (items: ProviderGroup[]) => (
     <div className={styles.list}>
@@ -31,13 +37,7 @@ export function ProviderCategoryList({ groups, activeBrand, onSelect }: Provider
         const total = group.resources.length;
         const activeCount = group.resources.filter((r) => !r.disabled).length;
         const logo = PROVIDER_LOGOS[group.id];
-        const itemClass = [
-          styles.item,
-          active ? styles.active : '',
-          group.id === 'kimi' ? styles.itemKimi : '',
-        ]
-          .filter(Boolean)
-          .join(' ');
+        const itemClass = [styles.item, active ? styles.active : ''].filter(Boolean).join(' ');
         const logoClassName = [
           styles.logo,
           logo?.transparent ? styles.logoTransparent : '',
@@ -61,7 +61,9 @@ export function ProviderCategoryList({ groups, activeBrand, onSelect }: Provider
             key={group.id}
             type="button"
             className={itemClass}
-            onClick={() => onSelect(group.id)}
+            onClick={() =>
+              group.resources.length === 0 && onAdd ? onAdd(group.id) : onSelect(group.id)
+            }
             aria-current={active ? 'page' : undefined}
           >
             <span className={styles.itemLeft}>
@@ -91,10 +93,7 @@ export function ProviderCategoryList({ groups, activeBrand, onSelect }: Provider
               </span>
             </span>
             <span
-              className={[
-                styles.badge,
-                total === 0 ? (group.id === 'kimi' ? styles.badgeKimi : styles.badgeAmber) : '',
-              ]
+              className={[styles.badge, total === 0 ? styles.badgeAmber : '']
                 .filter(Boolean)
                 .join(' ')}
             >
@@ -110,14 +109,24 @@ export function ProviderCategoryList({ groups, activeBrand, onSelect }: Provider
     <div className={styles.stack}>
       <aside className={styles.aside}>
         <p className={styles.eyebrow}>{t('providersPage.categories.title')}</p>
-        {renderGroups(providerGroups)}
+        {renderGroups(configured)}
+        {available.length > 0 && (
+          <>
+            <button
+              type="button"
+              className={styles.addProvider}
+              aria-expanded={showAvailable}
+              aria-controls="available-providers"
+              onClick={() => onShowAvailable?.(!showAvailable)}
+            >
+              {t('providersPage.categories.addProvider')}
+            </button>
+            <div id="available-providers" hidden={!showAvailable}>
+              {showAvailable && renderGroups(available)}
+            </div>
+          </>
+        )}
       </aside>
-      {quickFillGroups.length > 0 && (
-        <aside className={styles.aside}>
-          <p className={styles.eyebrow}>{t('providersPage.categories.quickFill')}</p>
-          {renderGroups(quickFillGroups)}
-        </aside>
-      )}
     </div>
   );
 }

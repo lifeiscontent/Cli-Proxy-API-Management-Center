@@ -2122,7 +2122,9 @@
     "categories": {
       "title": "공급자",
       "quickFill": "빠른 입력",
-      "activeCount": "활성 {{active}}/{{total}}"
+      "activeCount": "활성 {{active}}/{{total}}",
+      "addProvider": "제공업체 추가",
+      "noConfigured": "구성된 제공업체가 없습니다. 제공업체 추가를 선택해 연결하세요."
     },
     "providerNames": {
        "aiCodeMirror": "AIcodemirror",

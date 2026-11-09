@@ -2116,7 +2116,9 @@
     "categories": {
       "title": "提供商",
       "quickFill": "快速接入",
-      "activeCount": "{{active}}/{{total}} 活跃"
+      "activeCount": "{{active}}/{{total}} 活跃",
+      "addProvider": "添加提供商",
+      "noConfigured": "尚未配置提供商。选择“添加提供商”以连接。"
     },
     "providerNames": {
        "aiCodeMirror": "AIcodemirror",
