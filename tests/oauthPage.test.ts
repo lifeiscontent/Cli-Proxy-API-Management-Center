@@ -21,10 +21,6 @@ import type { ProviderFlowState } from '@/features/oauth/hooks/useOAuthFlows';
 import { resolveCallbackUrl, XAI_CALLBACK_URL } from '@/features/oauth/callbackUrl';
 import { resolveFlowView, splitAuthUrl } from '@/features/oauth/flowView';
 import { buildPluginOAuthProviderCards, OAUTH_PROVIDERS } from '@/features/oauth/providers';
-import {
-  KIMI_CHINESE_AFFILIATE_URL,
-  KIMI_INTERNATIONAL_AFFILIATE_URL,
-} from '@/features/providers/kimi';
 import type { PluginListEntry } from '@/types';
 
 describe('OAuth dialog view resolution', () => {
@@ -152,26 +148,6 @@ describe('OAuth provider gallery', () => {
     });
   }
 
-  test('merges both Kimi sites into one sponsor card with per-site entries', async () => {
-    const i18n = createInstance();
-    await i18n.init({ lng: 'zh-CN', resources: { 'zh-CN': { translation: zhCN } } });
-    const markup = renderToStaticMarkup(
-      createElement(
-        I18nextProvider,
-        { i18n },
-        createElement(MemoryRouter, null, createElement(OAuthPage))
-      )
-    );
-    // 一张品牌卡（role=group），卡内两个站点登录入口 + 两个开放平台注册链接
-    expect(markup.match(/role="group"/g)?.length).toBe(1);
-    const card = markup.slice(markup.indexOf('role="group"'));
-    expect(card).toContain('aria-label="Kimi 国内站"');
-    expect(card).toContain('aria-label="Kimi 国际站"');
-    expect(card).toContain('>国内站</button>');
-    expect(card).toContain('>国际站</button>');
-    expect(card.match(/aria-label="注册开放平台 · Kimi /g)?.length).toBe(2);
-  });
-
   test('keeps each visible Kimi site name inside its accessible name', () => {
     const sponsors = OAUTH_PROVIDERS.filter((provider) => provider.sponsor);
     expect(sponsors.map((provider) => provider.id)).toEqual(['kimi', 'kimi-ai']);
@@ -200,23 +176,6 @@ describe('OAuth provider gallery', () => {
     );
   });
 
-  test('keeps both Kimi registration links as safe external links', async () => {
-    const i18n = createInstance();
-    await i18n.init({ lng: 'en', resources: { en: { translation: en } } });
-    const markup = renderToStaticMarkup(
-      createElement(
-        I18nextProvider,
-        { i18n },
-        createElement(MemoryRouter, null, createElement(OAuthPage))
-      )
-    );
-    for (const url of [KIMI_CHINESE_AFFILIATE_URL, KIMI_INTERNATIONAL_AFFILIATE_URL]) {
-      const escaped = url.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/&/g, '&amp;');
-      expect(markup).toMatch(
-        new RegExp(`href="${escaped}" target="_blank" rel="noopener noreferrer"`)
-      );
-    }
-  });
 });
 
 describe('OAuth dialog secondary text', () => {

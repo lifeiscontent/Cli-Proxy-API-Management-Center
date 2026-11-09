@@ -3,7 +3,8 @@ import type { SponsorProviderRaw } from './types';
 
 export const APIKEY_FUN_PROVIDER_NAME = 'apikeyFun';
 export const APIKEY_FUN_DISPLAY_NAME = 'APIKEY.FUN';
-export const APIKEY_FUN_AFFILIATE_URL = 'https://apikey.fan/register?aff=AKCPA';
+// Ad-free build: no referral links or campaigns.
+export const APIKEY_FUN_AFFILIATE_URL = '';
 export const APIKEY_FUN_DASHBOARD_URL = 'https://apikey.fan/dashboard';
 export const APIKEY_FUN_STANDARD_BASE_URL = 'https://api.apikey.fan';
 export const APIKEY_FUN_DIRECT_BASE_URL = 'https://slb.apikey.fan';
@@ -12,6 +13,9 @@ export const APIKEY_FUN_CODEX_BASE_URL = APIKEY_FUN_OPENAI_BASE_URL;
 export const APIKEY_FUN_ANTHROPIC_BASE_URL = APIKEY_FUN_STANDARD_BASE_URL;
 export const APIKEY_FUN_GEMINI_BASE_URL = APIKEY_FUN_STANDARD_BASE_URL;
 export const APIKEY_FUN_USAGE_PATH = '/v1/usage';
+
+// Ad-free build: hide the sponsor quick-start page and its sidebar link.
+export const APIKEY_FUN_QUICK_START_ENABLED = false;
 
 export const APIKEY_FUN_BASE_URL_OPTIONS = [
   {
