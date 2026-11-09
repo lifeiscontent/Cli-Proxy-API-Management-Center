@@ -19,7 +19,7 @@ describe('AIcodemirror sponsor', () => {
     const definition = getSponsorProviderDefinition('aiCodeMirror');
     expect(definition.displayName).toBe('AIcodemirror');
     expect([...definition.protocols].sort()).toEqual(['claude', 'codex', 'gemini', 'openai']);
-    expect(definition.affiliateUrl).toBe('https://www.aicodemirror.ai/register?invitecode=YNE3NQ');
+    expect(definition.affiliateUrl).toBe('');
     expect(definition.supportsUsageCheck).toBe(false);
     expect(definition.baseUrlOptions.map((option) => option.baseUrl)).toEqual(roots);
     expect(resolveAiCodeMirrorBaseUrl(undefined)).toBe(roots[0]);

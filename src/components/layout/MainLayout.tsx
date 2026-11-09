@@ -47,7 +47,11 @@ import {
   resolvePluginAssetURL,
   type PluginResourceEntry,
 } from '@/features/plugins/pluginResources';
-import { APIKEY_FUN_DISPLAY_NAME, hasApiKeyFunConfig } from '@/features/providers/sponsor';
+import {
+  APIKEY_FUN_DISPLAY_NAME,
+  APIKEY_FUN_QUICK_START_ENABLED,
+  hasApiKeyFunConfig,
+} from '@/features/providers/sponsor';
 import { triggerHeaderRefresh } from '@/hooks/useHeaderRefresh';
 import { LANGUAGE_LABEL_KEYS, LANGUAGE_ORDER } from '@/utils/constants';
 import { isSupportedLanguage } from '@/utils/language';
@@ -605,7 +609,7 @@ export function MainLayout() {
           metaKey: 'nav_meta.dashboard',
           icon: sidebarIcons.dashboard,
         },
-        ...(!isApiKeyFunConfigured ? [quickStartNavItem] : []),
+        ...(APIKEY_FUN_QUICK_START_ENABLED && !isApiKeyFunConfigured ? [quickStartNavItem] : []),
       ],
     },
     {
@@ -641,7 +645,7 @@ export function MainLayout() {
           metaKey: 'nav_meta.routing',
           icon: sidebarIcons.routing,
         },
-        ...(isApiKeyFunConfigured ? [quickStartNavItem] : []),
+        ...(APIKEY_FUN_QUICK_START_ENABLED && isApiKeyFunConfigured ? [quickStartNavItem] : []),
       ],
     },
     {
