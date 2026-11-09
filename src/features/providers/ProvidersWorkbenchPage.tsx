@@ -115,6 +115,7 @@ export function ProvidersWorkbenchPage({ fixedBrand }: ProvidersWorkbenchPagePro
     resource: null,
   });
   const sheetRef = useRef<ProviderSheetHandle>(null);
+  const [showAvailableProviders, setShowAvailableProviders] = useState(false);
 
   const connected = connectionStatus === 'connected';
   const { usageByProvider, refreshRecentRequests } = useProviderRecentRequests({
@@ -154,14 +155,27 @@ export function ProvidersWorkbenchPage({ fixedBrand }: ProvidersWorkbenchPagePro
   );
 
   const allGroups = useMemo(() => workbench.snapshot?.groups ?? [], [workbench.snapshot]);
+  // Ad-free build: configured providers first, then by name, with no sponsor placement.
   const groups = useMemo(
-    () => (fixedBrand ? allGroups.filter((group) => group.id === fixedBrand) : allGroups),
-    [allGroups, fixedBrand]
+    () =>
+      fixedBrand
+        ? allGroups.filter((group) => group.id === fixedBrand)
+        : [...allGroups].sort(
+            (a, b) =>
+              Number(b.resources.length > 0) - Number(a.resources.length > 0) ||
+              t(`providersPage.providerNames.${a.id}`).localeCompare(
+                t(`providersPage.providerNames.${b.id}`),
+                i18n.language
+              )
+          ),
+    [allGroups, fixedBrand, t, i18n.language]
   );
   const firstVisibleBrand = groups[0]?.id ?? fixedBrand ?? 'gemini';
   const activeBrand =
     fixedBrand ??
-    (groups.some((group) => group.id === uiState.activeBrand)
+    (groups.some(
+      (group) => group.id === uiState.activeBrand && (group.resources.length > 0 || sheetState.open)
+    )
       ? uiState.activeBrand
       : firstVisibleBrand);
   const activeFilterState = getProviderFilterState(uiState, activeBrand);
@@ -285,6 +299,15 @@ export function ProvidersWorkbenchPage({ fixedBrand }: ProvidersWorkbenchPagePro
   const errorBanner = workbench.errorMessage ? (
     <div className="error-box">{workbench.errorMessage}</div>
   ) : null;
+
+  const selectProvider = async (brand: ProviderBrand, create = false) => {
+    if (sheetState.open && sheetRef.current && !(await sheetRef.current.confirmDiscardIfDirty()))
+      return;
+    setActiveBrand(brand);
+    setShowAvailableProviders(false);
+    if (create) setSheetState({ open: true, brand, mode: 'create', resource: null });
+    else setSheetState((state) => ({ ...state, open: false }));
+  };
 
   const openCreate = useCallback(() => {
     const brand = activeBrand;
@@ -415,10 +438,12 @@ export function ProvidersWorkbenchPage({ fixedBrand }: ProvidersWorkbenchPagePro
         isNewDisabled={disableMutations}
         showNewAction={!fixedBrand}
         showSummary={fixedBrand !== 'apikeyFun'}
-        newLabel={t('providersPage.actions.new')}
+        newLabel={t(
+          providerFamilies ? 'providersPage.actions.new' : 'providersPage.categories.addProvider'
+        )}
         variant={fixedBrand === 'apikeyFun' ? 'quickStart' : undefined}
         onRefresh={() => void handleRefresh()}
-        onNew={openCreate}
+        onNew={providerFamilies ? openCreate : () => setShowAvailableProviders(true)}
       />
 
       {errorBanner}
@@ -428,20 +453,10 @@ export function ProvidersWorkbenchPage({ fixedBrand }: ProvidersWorkbenchPagePro
           <ProviderCategoryList
             groups={groups}
             activeBrand={activeGroup.id}
-            onSelect={(brand) => {
-              const isSwitching = sheetState.open && sheetState.brand !== brand;
-              const proceed =
-                isSwitching && sheetRef.current
-                  ? sheetRef.current.confirmDiscardIfDirty()
-                  : Promise.resolve(true);
-              void proceed.then((ok) => {
-                if (!ok) return;
-                setActiveBrand(brand);
-                if (isSwitching) {
-                  closeSheet();
-                }
-              });
-            }}
+            showAvailable={showAvailableProviders}
+            onShowAvailable={setShowAvailableProviders}
+            onSelect={(brand) => void selectProvider(brand)}
+            onAdd={(brand) => void selectProvider(brand, true)}
           />
         ) : null}
         {fixedBrand === 'apikeyFun' ? (
@@ -453,6 +468,10 @@ export function ProvidersWorkbenchPage({ fixedBrand }: ProvidersWorkbenchPagePro
               mutationDisabled={disableMutations}
             />
           </div>
+        ) : providerFamilies === 0 && !sheetState.open ? (
+          <section aria-label={t('providersPage.categories.title')}>
+            <p>{t('providersPage.categories.noConfigured')}</p>
+          </section>
         ) : (
           <ProviderResourcePanel
             group={activeGroup}
