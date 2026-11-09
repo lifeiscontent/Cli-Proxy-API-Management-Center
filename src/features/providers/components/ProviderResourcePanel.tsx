@@ -56,7 +56,8 @@ export function ProviderResourcePanel({
   const logo = PROVIDER_LOGOS[group.id];
   const providerTitle = t(`providersPage.providerNames.${group.id}`);
   const hasProviderInfo = group.resources.length > 0;
-  const showSponsorRegistrationLink = group.id === 'apikeyFun' && !hasProviderInfo;
+  const showSponsorRegistrationLink =
+    group.id === 'apikeyFun' && !hasProviderInfo && Boolean(APIKEY_FUN_AFFILIATE_URL);
   const showSponsorDashboardLink = group.id === 'apikeyFun' && hasProviderInfo;
   const registrationUrl =
     group.id === 'kimi'

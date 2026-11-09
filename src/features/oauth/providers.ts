@@ -146,7 +146,7 @@ export const supportsManualCallback = (provider: OAuthProviderCard): boolean =>
 export const isSponsor = (
   provider: OAuthProviderCard
 ): provider is BuiltInOAuthProviderCard & { sponsor: SponsorSite } =>
-  provider.kind === 'builtin' && Boolean(provider.sponsor);
+  provider.kind === 'builtin' && Boolean(provider.sponsor?.signUpUrl);
 
 export const resolveThemedIcon = (icon: ThemedIcon, theme: 'light' | 'dark'): string =>
   typeof icon === 'string' ? icon : icon[theme];

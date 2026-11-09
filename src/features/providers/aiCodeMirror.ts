@@ -3,8 +3,8 @@ import type { SponsorProviderRaw } from './types';
 
 export const AI_CODE_MIRROR_PROVIDER_NAME = 'aiCodeMirror';
 export const AI_CODE_MIRROR_DISPLAY_NAME = 'AIcodemirror';
-export const AI_CODE_MIRROR_AFFILIATE_URL =
-  'https://www.aicodemirror.ai/register?invitecode=YNE3NQ';
+// Ad-free build: no referral link.
+export const AI_CODE_MIRROR_AFFILIATE_URL = '';
 export const AI_CODE_MIRROR_GLOBAL_BASE_URL = 'https://api.aicodemirror.ai';
 export const AI_CODE_MIRROR_DOMESTIC_BASE_URL = 'https://api.claudecode.net.cn';
 
