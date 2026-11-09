@@ -1,0 +1,38 @@
+# Hosts that the built panel may link to or call.
+# scripts/check-promotions.mjs fails on any other host.
+# Add a host only after you make sure that it is not a promotion.
+
+# Provider APIs
+api.aicodemirror.ai
+api.anthropic.com
+api.apikey.fan
+api.claudecode.net.cn
+api.fenno.ai
+api.kimi.ai
+api.kimi.com
+api.meta.ai
+api.modelink.ai
+api.moonshot.ai
+api.moonshot.cn
+api.openai.com
+api.qnaigc.com
+api.x.ai
+chatgpt.com
+cli-chat-proxy.grok.com
+cloudcode-pa.googleapis.com
+daily-cloudcode-pa.googleapis.com
+daily-cloudcode-pa.sandbox.googleapis.com
+generativelanguage.googleapis.com
+server.codeium.com
+slb.apikey.fan
+
+# APIKEY.FUN dashboard link, shown only after you configure the provider
+apikey.fan
+
+# Project and library links
+api.github.com
+github.com
+help.router-for.me
+react.dev
+react.i18next.com
+reactrouter.com
