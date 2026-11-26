@@ -1,7 +1,6 @@
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { IconChevronLeft, IconExternalLink } from '@/components/ui/icons';
-import { getKimiAffiliateUrl } from '../kimi';
 import {
   connectionCounts,
   getConnectionFormTarget,
@@ -28,7 +27,7 @@ const CUSTOM_BRANDS: ReadonlySet<ProviderBrand> = new Set(['openaiCompatibility'
  * official APIs and the custom OpenAI-compatible entry as quiet tiles.
  */
 export function ProviderPicker({ groups, variant = 'sheet', onPick }: ProviderPickerProps) {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const countOf = (brand: ProviderBrand) => {
     const group = groups.find((item) => item.id === brand);
     return group ? connectionCounts(group).total : 0;
@@ -37,7 +36,7 @@ export function ProviderPicker({ groups, variant = 'sheet', onPick }: ProviderPi
   const featured = QUICK_FILL_BRAND_ORDER.filter((brand) => available.has(brand));
   const official = groups
     .map((group) => group.id)
-    .filter((brand) => !isQuickFillBrand(brand) && !CUSTOM_BRANDS.has(brand) && brand !== 'kimi');
+    .filter((brand) => !isQuickFillBrand(brand) && !CUSTOM_BRANDS.has(brand));
   const custom = groups.map((group) => group.id).filter((brand) => CUSTOM_BRANDS.has(brand));
   const name = (brand: ProviderBrand) => t(`providersPage.providerNames.${brand}`);
   const connected = (brand: ProviderBrand) => {
@@ -131,18 +130,10 @@ export function ProviderPicker({ groups, variant = 'sheet', onPick }: ProviderPi
         </section>
       ) : null}
 
-      {official.length > 0 || available.has('kimi') ? (
+      {/* Ad-free build: Kimi is an ordinary tile in the official list. */}
+      {official.length > 0 ? (
         <section className={styles.section}>
           <h3 className={styles.heading}>{t('providersPage.picker.official')}</h3>
-          {available.has('kimi') ? (
-            <ul className={styles.features}>
-              {featuredCard(
-                'kimi',
-                null,
-                getKimiAffiliateUrl(i18n.resolvedLanguage ?? i18n.language ?? '')
-              )}
-            </ul>
-          ) : null}
           <ul className={styles.tiles}>{official.map(tile)}</ul>
         </section>
       ) : null}

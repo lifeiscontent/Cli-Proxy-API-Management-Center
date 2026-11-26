@@ -21,11 +21,13 @@ import type {
   ProviderResource,
   ProviderSortBy,
   SortDir,
+  SponsorProviderBrand,
   SponsorProviderRaw,
 } from './types';
 
 /** Brands that live in the "quick fill" partner section of the brand strip, in display order. */
-export const QUICK_FILL_BRAND_ORDER = ['fennoAI', 'qiniuCloud', 'aiCodeMirror'] as const;
+// Ad-free build: no partner section. Partners list as ordinary providers.
+export const QUICK_FILL_BRAND_ORDER: readonly SponsorProviderBrand[] = [];
 
 const QUICK_FILL_BRANDS: ReadonlySet<string> = new Set(QUICK_FILL_BRAND_ORDER);
 
@@ -40,8 +42,8 @@ export const partitionProviderGroups = (
     .filter((group) => isQuickFillBrand(group.id))
     .sort(
       (left, right) =>
-        QUICK_FILL_BRAND_ORDER.indexOf(left.id as (typeof QUICK_FILL_BRAND_ORDER)[number]) -
-        QUICK_FILL_BRAND_ORDER.indexOf(right.id as (typeof QUICK_FILL_BRAND_ORDER)[number])
+        QUICK_FILL_BRAND_ORDER.indexOf(left.id as SponsorProviderBrand) -
+        QUICK_FILL_BRAND_ORDER.indexOf(right.id as SponsorProviderBrand)
     ),
 });
 

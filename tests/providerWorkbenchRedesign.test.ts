@@ -20,7 +20,6 @@ import {
   getConnectionFormTarget,
   getResourceDisplayName,
   matchesResourceFilter,
-  partitionProviderGroups,
   resolveResourceUsage,
   selectVisibleResources,
 } from '@/features/providers/resourceView';
@@ -91,18 +90,6 @@ describe('resource view logic', () => {
       ).map((r) => r.name)
     ).toEqual(['beta']);
     expect(collectGroupModels(group('gemini', resources))).toEqual(['gemini-flash', 'gemini-pro']);
-  });
-
-  test('quick-fill partners are split out and ordered after regular providers', () => {
-    const { providers, quickFill } = partitionProviderGroups([
-      group('aiCodeMirror'),
-      group('gemini'),
-      group('fennoAI'),
-      group('kimi'),
-      group('qiniuCloud'),
-    ]);
-    expect(providers.map((g) => g.id)).toEqual(['gemini', 'kimi']);
-    expect(quickFill.map((g) => g.id)).toEqual(['fennoAI', 'qiniuCloud', 'aiCodeMirror']);
   });
 
   test('sponsor bundles carry no request health; others always resolve a status bar', () => {
@@ -248,22 +235,6 @@ describe('provider picker', () => {
     group('aiCodeMirror'),
   ];
 
-  test('features quick-connect partners first with connect and register actions', () => {
-    const html = render(createElement(ProviderPicker, { groups: catalogue, onPick: () => {} }));
-    const featured = html.indexOf(en.providersPage.picker.featured);
-    const official = html.indexOf(en.providersPage.picker.official);
-    expect(featured).toBeGreaterThanOrEqual(0);
-    expect(featured).toBeLessThan(official);
-    for (const name of ['FennoAI', en.providersPage.providerNames.qiniuCloud]) {
-      expect(html).toContain(`aria-label="${en.providersPage.picker.connect} ${name}"`);
-      expect(html.indexOf(name)).toBeLessThan(official);
-    }
-    const links = [...html.matchAll(/<a[^>]*target="_blank"[^>]*>/g)];
-    // Three partners plus the Kimi registration link.
-    expect(links).toHaveLength(4);
-    expect(html).toContain(en.providersPage.picker.oneKey.replace('{{count}}', '2'));
-  });
-
   test('edits the full connected partner bundle but allows another ordinary connection', () => {
     const bundle = fennoAIToResource({
       openai: [],
@@ -275,8 +246,6 @@ describe('provider picker', () => {
     expect(getConnectionFormTarget(partner)).toEqual({ mode: 'edit', resource: bundle });
     expect(getConnectionFormTarget(group('fennoAI'))).toEqual({ mode: 'create', resource: null });
     expect(getConnectionFormTarget(group('gemini', [alpha])).mode).toBe('create');
-    const html = render(createElement(ProviderPicker, { groups: [partner], onPick: () => {} }));
-    expect(html).toContain(`aria-label="${en.providersPage.actions.edit} FennoAI"`);
   });
 
   test('marks connected brands and keeps the custom entry last', () => {
